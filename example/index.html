@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mixin.js Examples</title>
+</head>
+<body>
+<script src="../vendor/require.js" data-main="example"></script>
+<script>
+    require.config({
+        config: {
+            mixin: {
+                extensions: [Function]
+            }
+        },
+        paths: {
+            mixin: "../src/mixin"
+        }
+    });
+</script>
+</body>
+</html>
