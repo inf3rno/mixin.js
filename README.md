@@ -44,7 +44,7 @@ Enable extension manually:
 		//...
 	});
 
-Your can check whether an extension is enabled from your code with the `extensions.require(Function extendable, ...)`:
+You can check whether an extension is enabled from your code with the `extensions.require(Function extendable, ...)`:
 
 	define(["mixin"], function (Mixin){
 		Mixin.extensions.require(Function); //should throw Error if the Function.prototype extension is not enabled
