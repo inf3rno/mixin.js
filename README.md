@@ -2,6 +2,12 @@
 
 This small lib contains prototypal inheritance and multiple inheritance support to ease the pain by creating complex javascript applications.
 
+# Warning!
+
+**I have had serious doubts about automatic calls of the ancestor's constructor. I started 3 issues with bug label because of that. I'll modify the library to support manual constructor calls because of flexibility issues.**
+
+**That fix will come with the 1.1.0 release. I don't recommend to build on the 1.0.x versions, because they won't be supported any longer, and the 1.1.x versions won't be backward compatible...**
+
 ## Requirements
 
 You'll need **require.js** only. I always use *require.js* on client side, but maybe later I'll add a standalone version.
