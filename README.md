@@ -366,3 +366,7 @@ I have to create a build environment to make those different versions, but I usu
 ## Issues
 
 If you have found a bug, or you have an enhancement idea, please don't hesitate, [write it to me](https://github.com/inf3rno/mixin.js/issues).
+
+## License
+
+Mixin.js is licensed under the [WTFPL](http://www.wtfpl.net/) license, so do wtf you want, I don't really care... ;-)
