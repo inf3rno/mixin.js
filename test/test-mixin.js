@@ -454,37 +454,6 @@ define(["mixin"], function (Mixin) {
                 Mixin.extensions.require(o);
             }).not.toThrow();
             expect(o).toEqual({a: 1});
-
-
-            var oA = {
-                constructor: function (){
-                    this.a = 1;
-                }
-            };
-
-            var I = {
-                constructor: function (){
-                    this.i = 2;
-                }
-            };
-
-            var oD = oA.extend(
-                I,
-                {
-                    constructor: function (){
-                        this.d = 3;
-                    }
-                }
-            );
-
-            var A = oA.toFunction();
-            var D = oD.toFunction();
-
-            var a = new A();
-            console.log(a); //{a:1}
-            var d = new D();
-            console.log(d); //{a:1, i:2, d:3}
-
         });
     });
 
