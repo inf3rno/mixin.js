@@ -5,11 +5,14 @@ for (var file in window.__karma__.files)
         tests.push(file);
 
 requirejs.config({
-    baseUrl: '/base/src',
+    baseUrl: '/base',
     config: {
         mixin: {
             extensions: []
         }
+    },
+    paths: {
+        mixin: "src/amd/mixin"
     },
     deps: tests,
     callback: window.__karma__.start

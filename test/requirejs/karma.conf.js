@@ -1,12 +1,12 @@
 module.exports = function (config) {
     config.set({
-        basePath: './',
+        basePath: '../../',
         frameworks: ['jasmine', 'requirejs'],
         files: [
-            {pattern: 'test/bootstrap.js', included: true},
-            {pattern: 'test/**/*.js', included: false},
-            {pattern: 'src/**/*.js', included: false},
-            {pattern: 'vendor/**/*.js', included: false}
+            {pattern: 'test/requirejs/bootstrap.js', included: true},
+            {pattern: "test/requirejs/karma.conf.js", served: false},
+            {pattern: 'test/requirejs/**/*.js', included: false},
+            {pattern: 'src/amd/**/*.js', included: false}
         ],
         exclude: [
 
