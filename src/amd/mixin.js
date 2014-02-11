@@ -2,6 +2,28 @@ define(["module"], function (module) {
 
 
     var version = "1.1.0";
+    var mixinProperty = "__mixin";
+    var MixinMap = {
+        set: function (target, mixin) {
+            if (Object.defineProperty)
+                Object.defineProperty(target, mixinProperty, {
+                    value: mixin,
+                    configurable: false,
+                    enumerable: false,
+                    writeable: false
+                });
+            else
+                target[mixinProperty] = mixin
+        },
+        get: function (target) {
+            if (target)
+                return target[mixinProperty];
+        },
+        has: function (target) {
+            return target && !!target[mixinProperty];
+        }
+    };
+
     var Mixable = {
         constructor: function (source) {
             if (!(this instanceof Mixin))
@@ -27,8 +49,8 @@ define(["module"], function (module) {
             if (isPrototype)
                 target = source.constructor;
 
-            if (target && target.__mixin)
-                return target.__mixin;
+            if (MixinMap.has(target))
+                return MixinMap.get(target);
 
             if (!target) {
                 if (!source)
@@ -41,7 +63,7 @@ define(["module"], function (module) {
                 this.hasGeneratedConstructor = true;
             }
             target.prototype.constructor = target;
-            target.__mixin = this;
+            MixinMap.set(target, this);
             this.target = target;
             this.ancestors = [];
         },
@@ -94,9 +116,9 @@ define(["module"], function (module) {
         hasInstance: function (instance) {
             if (instance instanceof this.target)
                 return true;
-            if (!instance.constructor || !instance.constructor.__mixin)
+            if (!instance.constructor || !MixinMap.has(instance.constructor))
                 return false;
-            return this.hasDescendants(instance.constructor.__mixin);
+            return this.hasDescendants(MixinMap.get(instance.constructor));
         },
         toFunction: function () {
             return this.target;
