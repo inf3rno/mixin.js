@@ -8,57 +8,25 @@ This small lib contains prototypal inheritance and multiple inheritance support 
 
 After that I'll add support for component management systems: npm, bower, jam, component, etc...
 
-## Requirements
+## Installation
 
-There are no requirements, this library uses core javascript only.
+There will be **standalone**, **commonJS** and **AMD** support. Currently only the **AMD** is supported and tested with **require.js**. The others will come after the naming procedure.
 
-## Supported platforms
+There is nothing special about the installation, just choose one of the modules in the `src` folder and use it.
 
-### Browser support
+### Supported platforms
+
+#### Browser support
 
 The library should work in **every browser**, because it uses core javascript only.
 
 I tested in firefox with require.js. If you have troubles with other browsers, please [send me a report](https://github.com/inf3rno/mixin.js/issues/1)!
 
-### NodeJS support
+#### NodeJS support
 
-Coming soon...
+Is coming with commonJS support and npm registration...
 
-## Configuration
-
-The *Function.prototype* and *Object.prototype* extensions are not enabled by default. You can enable them in several ways...
-
-Enable extension from *require.js* config:
-
-    require.config({
-        config: {
-            mixin: {
-                extensions: [Function] //enables Function.prototype extension
-            }
-        }
-    });
-
-or manually with `Mixin.config` for example in *AMD style*:
-
-	define(["mixin"], function (Mixin){
-        Mixin.config({
-             extensions: [Function] //enables Function.prototype extension
-        });
-
-        //...
-	});
-
-Enable extension one by one manually:
-
-    Mixin.extensions.enable(Object); //enables Object.prototype extension
-
-You can check whether an extension is enabled from your code in a similar way:
-
-	Mixin.extensions.require(Object); //should throw Error if the Object.prototype extension is not enabled
-
-Usually the `config()` function is more than enough.
-
-## Documentation
+## API Documentation
 
 ### Instantiation
 
@@ -278,11 +246,52 @@ The `Mixin.hasInstance(instance)` returns `true` when the actual `Mixin` contain
     console.assert(son.hasInstance(me), "The collective of sons should recognize that I am a member of it.");
     console.assert(grandma.hasInstance(me), "The collective of grandmas should recognize that I am one of the grandsons.");
 
-### Extensions
+### Extension support
 
-You can use 2 extensions to forget the instantiation of `Mixin`. You can enable extensions the way I wrote by the *Configuration* section.
+The main goal of extensions to adapt `Mixin` to the system you prefer. So these extensions are just adapters, they do not modify the behavior of `Mixin()`.
 
-#### Function.prototype extension
+There isn't any restriction about how an extension should be implemented, however I recommend the following interface:
+
+    void initialize (options) - initialization, configuration
+    void config(options) - configuration, should contain the options.isEnabled flag which enables the plugin
+    Boolean isEnabled - this property stores whether the extension is enabled
+    void enable() - enables the extension
+    void disable() - disables the extension
+
+If you have your own idea, just use the `Mixin()` in your own adapter. There is nothing else to do.
+
+#### Mixin.Extension
+
+You can add a target object appender extension by instantiating the `Mixin.Extension(options)` `constructor`.
+
+For example the following `extension` appends the `Function.prototype`.
+
+    var extension = new Mixin.Extension({
+        target: Function,
+        source: {
+            toObject: function (){
+                return this.prototype
+            }
+        }
+    });
+
+This kind of `extension`s copy properties from a `source` to a `target` during the enabling procedure.
+
+    extension.enable();
+    console.assert(extension.isEnabled, "The extension should be enabled after calling the enable()");
+    console.assert(Function.prototype.toObject instanceof Function, "Should copy the toObject function by enable.");
+
+Disabling the `extension` should restore the original properties of the `target`.
+
+    extension.disable();
+    console.assert(!extension.isEnabled, "The extension should not be enabled after calling the disable()");
+    console.assert(Function.prototype.toObject === undefined, "Should restore the undefined property of toObject by disable.");
+
+Ofc. `Mixin.Extension` is not always the best choice, but it works like charm by the `Function.prototype` and the `Object.prototype` extensions.
+
+## Extensions
+
+### Function.prototype extension
 
 This extension extends the `Function.prototype` with 6 additional functions:
 
@@ -327,7 +336,7 @@ Example usage:
     console.log(d); //{a:1, b:2, c:3, d:4}
 
 
-#### Object.prototype extension
+### Object.prototype extension
 
 This extension extends the `Object.prototype` with 3 additional functions:
 
@@ -368,7 +377,7 @@ Example usage:
     var d = new Descendant();
     console.log(d); //{a:1, b:2, c:3}
 
-Of course your can combine the 2 extensions if you want. Usually the `Function.prototype` extension is more than enough, and nobody will like you if you override the `Object.prototype`.
+Of course your can combine this with the `Function.prototype` extension if you want, but usually the `Function.prototype` extension is more than enough, and nobody will like you if you override the `Object.prototype`.
 
 ## Contribution
 

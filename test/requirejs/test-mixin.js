@@ -1,6 +1,5 @@
 define(["mixin"], function (Mixin) {
 
-
     describe("jasmine behavior about exceptions", function () {
         it("should not late bind the evaluation of toThrow", function () {
             var i = 2;
@@ -382,82 +381,75 @@ define(["mixin"], function (Mixin) {
         });
     });
 
-    describe("Mixin.extensions", function () {
+    describe("Mixin.Extension(options)", function () {
+
+        var target = function (){};
+        var proto = target.prototype;
+        var key = "property";
+        var value = function () {
+        };
+        var source = {};
+        source[key] = value;
+        var extension = new Mixin.Extension({
+            target: target,
+            source: source
+        });
+
         it("should not enable extensions by default", function () {
-            expect(Object.prototype.mixin).toBeUndefined();
-            expect(Function.prototype.mixin).toBeUndefined();
-        });
-
-        it("should die if a required extension is not enabled", function () {
-            expect(function () {
-                Mixin.extensions.require(Object);
-            }).toThrow("Required extensions are not all enabled!");
-        });
-
-        it("should die if a required extension is unknown", function () {
-            expect(function () {
-                Mixin.extensions.require(null);
-            }).toThrow("Extension is not defined!");
+            expect(proto[key]).toBeUndefined();
+            expect(extension.isEnabled).toBeFalsy();
         });
 
         it("should enable extension by enable()", function () {
-            Mixin.extensions.enable(Function);
-            expect(Function.prototype.mixin).toBeDefined();
-            expect(Object.prototype.mixin).toBeUndefined();
+            extension.enable();
+            expect(proto[key]).toBeDefined();
+            expect(extension.isEnabled).toBeTruthy();
         });
 
-        it("should not enable unknown extensions", function () {
-            expect(function () {
-                Mixin.extensions.enable(null);
-            }).toThrow("Extension is not defined!");
+        it("should restore undefined by disable()", function () {
+            extension.disable();
+            expect(proto[key]).toBeUndefined();
+            expect(extension.isEnabled).toBeFalsy();
         });
 
-        it("should die if one of the required extensions is not enabled", function () {
-            expect(function () {
-                Mixin.extensions.require(Function, Object);
-            }).toThrow("Required extensions are not all enabled!");
+        it("should restore original value by disable()", function () {
+            proto[key] = 123;
+            extension.enable();
+            expect(proto[key] instanceof Function).toBeTruthy();
+            extension.disable();
+            expect(proto[key]).toEqual(123);
+            delete(proto[key]);
         });
 
-        it("should enable extension by setting require.config which is passed to Mixin.config()", function () {
-            Mixin.config({
-                extensions: [Object]
+        it("should not restore value by disable() if something overrides the enabled value", function () {
+            proto[key] = 123;
+            extension.enable();
+            expect(proto[key] instanceof Function).toBeTruthy();
+            proto[key] = 321;
+            extension.disable();
+            expect(proto[key]).toEqual(321);
+            delete(proto[key]);
+        });
+
+        it("should not behave different by calling enable() and disable() series", function () {
+            extension.enable();
+            extension.enable();
+            expect(proto[key]).toBeDefined();
+            expect(extension.isEnabled).toBeTruthy();
+            extension.disable();
+            extension.disable();
+            expect(proto[key]).toBeUndefined();
+            expect(extension.isEnabled).toBeFalsy();
+        });
+
+        it("should enable extension by config()", function () {
+            extension.config({
+                isEnabled: true
             });
-            expect(Function.prototype.mixin).toBeDefined();
-            expect(Object.prototype.mixin).toBeDefined();
+            expect(extension.isEnabled).toBeTruthy();
+            extension.disable();
         });
 
-        it("should not die if require.config is not set", function () {
-            expect(function () {
-                Mixin.config();
-            }).not.toThrow();
-        });
-
-        it("should not die if all required extension is enabled", function () {
-            expect(function () {
-                Mixin.extensions.require(Function, Object);
-            }).not.toThrow();
-        });
-
-        it("should recognize custom extensions as well", function () {
-            var o = {};
-            Mixin.extensions.push({
-                extend: o,
-                source: {
-                    a: 1
-                }
-            });
-            expect(function () {
-                Mixin.extensions.require(o);
-            }).toThrow("Required extensions are not all enabled!");
-            expect(function () {
-                Mixin.extensions.enable(o);
-            }).not.toThrow();
-            expect(function () {
-                Mixin.extensions.require(o);
-            }).not.toThrow();
-            expect(o).toEqual({a: 1});
-        });
     });
-
 
 });

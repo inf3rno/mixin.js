@@ -1,9 +1,8 @@
-define(["module"], function (module) {
-
+define(function () {
 
     var version = "1.1.0";
     var mixinProperty = "__mixin";
-    var MixinMap = {
+    var Mapping = {
         set: function (target, mixin) {
             if (Object.defineProperty)
                 Object.defineProperty(target, mixinProperty, {
@@ -18,6 +17,7 @@ define(["module"], function (module) {
         get: function (target) {
             if (target)
                 return target[mixinProperty];
+            return null;
         },
         has: function (target) {
             return target && !!target[mixinProperty];
@@ -40,17 +40,17 @@ define(["module"], function (module) {
             if (!isValidSource)
                 throw new Error("Invalid source type of " + type + ".");
 
-            var isFunction = type == "function";
+            var isFunction = type == "function" && (source instanceof Function);
             var isPrototype = type == "object" && source && source.constructor && source === source.constructor.prototype;
 
             var target;
             if (isFunction)
                 target = source;
-            if (isPrototype)
+            else if (isPrototype)
                 target = source.constructor;
 
-            if (MixinMap.has(target))
-                return MixinMap.get(target);
+            if (Mapping.has(target))
+                return Mapping.get(target);
 
             if (!target) {
                 if (!source)
@@ -63,9 +63,10 @@ define(["module"], function (module) {
                 this.hasGeneratedConstructor = true;
             }
             target.prototype.constructor = target;
-            MixinMap.set(target, this);
+            Mapping.set(target, this);
             this.target = target;
             this.ancestors = [];
+            return this;
         },
         mixin: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
@@ -116,9 +117,9 @@ define(["module"], function (module) {
         hasInstance: function (instance) {
             if (instance instanceof this.target)
                 return true;
-            if (!instance.constructor || !MixinMap.has(instance.constructor))
+            if (!instance.constructor || !Mapping.has(instance.constructor))
                 return false;
-            return this.hasDescendants(MixinMap.get(instance.constructor));
+            return this.hasDescendants(Mapping.get(instance.constructor));
         },
         toFunction: function () {
             return this.target;
@@ -128,124 +129,58 @@ define(["module"], function (module) {
         }
     };
 
+    var Extension = {
+        target: null,
+        source: null,
+        backup: null,
+        isEnabled: false,
+        initialize: function (options) {
+            this.config(options);
+        },
+        enable: function () {
+            if (this.isEnabled)
+                return;
+            if (!this.target || !this.source)
+                throw new Error("Extension target and source must be set.");
+            this.backup = {};
+            for (var property in this.source)
+                if (this.source.hasOwnProperty(property) && this.target.hasOwnProperty(property) && property !== "constructor")
+                    this.backup[property] = this.target[property];
+            Mixin(this.target).mixin(this.source);
+            this.isEnabled = true;
+        },
+        disable: function () {
+            if (!this.isEnabled)
+                return;
+            for (var property in this.source) {
+                if (!this.source.hasOwnProperty(property))
+                    continue;
+                if (this.target[property] !== this.source[property])
+                    continue;
+                if (this.backup.hasOwnProperty(property))
+                    this.target[property] = this.backup[property];
+                else
+                    delete(this.target[property]);
+            }
+            delete(this.backup);
+            this.isEnabled = false;
+        },
+        config: function (options) {
+            if (!options)
+                return;
+            if (options.target)
+                this.target = Mixin(options.target).toObject();
+            if (options.source)
+                this.source = Mixin(options.source).toObject();
+            if (options.isEnabled)
+                this.enable();
+        }
+    };
+
     var Mixin = Mixable.constructor;
     Mixin.prototype = Mixable;
-    Mixin.extensions = [
-        {
-            enabled: false,
-            extend: Object,
-            source: {
-                mixin: function () {
-                    var mixin = new Mixin(this);
-                    mixin.mixin.apply(mixin, arguments);
-                    return this;
-                },
-                extend: function () {
-                    var mixin = new Mixin(this);
-                    var child = mixin.extend.apply(mixin, arguments);
-                    return child.toObject();
-                },
-                hasAncestors: function () {
-                    var mixin = new Mixin(this);
-                    return mixin.hasAncestors.apply(mixin, arguments);
-                },
-                hasDescendants: function () {
-                    var mixin = new Mixin(this);
-                    return mixin.hasDescendants.apply(mixin, arguments);
-                },
-                instanceOf: function () {
-                    for (var index = 0, length = arguments.length; index < length; ++index) {
-                        var mixin = new Mixin(arguments[index]);
-                        if (!mixin.hasInstance(this))
-                            return false;
-                    }
-                    return true;
-                },
-                toFunction: function () {
-                    var mixin = new Mixin(this);
-                    return mixin.toFunction();
-                }
-            }
-        },
-        {
-            enabled: false,
-            extend: Function,
-            source: {
-                mixin: function () {
-                    var mixin = new Mixin(this);
-                    mixin.mixin.apply(mixin, arguments);
-                    return this;
-                },
-                extend: function () {
-                    var mixin = new Mixin(this);
-                    var child = mixin.extend.apply(mixin, arguments);
-                    return child.toFunction();
-                },
-                hasAncestors: function () {
-                    var mixin = new Mixin(this);
-                    return mixin.hasAncestors.apply(mixin, arguments);
-                },
-                hasDescendants: function () {
-                    var mixin = new Mixin(this);
-                    return mixin.hasDescendants.apply(mixin, arguments);
-                },
-                hasInstance: function (instance) {
-                    var mixin = new Mixin(this);
-                    return mixin.hasInstance(instance);
-                },
-                toObject: function () {
-                    return this.prototype;
-                }
-            }
-        }
-    ];
-    Mixin.extensions.enable = function () {
-        for (var index = 0, length = arguments.length; index < length; ++index) {
-            var target = arguments[index];
-            var hasFound = false;
-            for (var extensionIndex = 0, extensionCount = this.length; extensionIndex < extensionCount; ++extensionIndex) {
-                var extension = this[extensionIndex];
-                if (extension.extend !== target)
-                    continue;
-                if (!extension.enabled) {
-                    var mixin = new Mixin(target);
-                    mixin.mixin(extension.source);
-                    extension.enabled = true;
-                }
-                hasFound = true;
-                break;
-            }
-            if (!hasFound)
-                throw new Error("Extension is not defined!");
-        }
-    };
-    Mixin.extensions.require = function () {
-        for (var index = 0, length = arguments.length; index < length; ++index) {
-            var target = arguments[index];
-            var hasFound = false;
-            for (var extensionIndex = 0, extensionCount = this.length; extensionIndex < extensionCount; ++extensionIndex) {
-                var extension = this[extensionIndex];
-                if (extension.extend !== target)
-                    continue;
-                if (!extension.enabled)
-                    throw new Error("Required extensions are not all enabled!");
-                hasFound = true;
-                break;
-            }
-            if (!hasFound)
-                throw new Error("Extension is not defined!");
-        }
-    };
-    Mixin.config = function (options) {
-        if (!options || !options.extensions)
-            return;
-        if (!(options.extensions instanceof Array))
-            options.extensions = [options.extensions];
-        this.extensions.enable.apply(this.extensions, options.extensions);
-    };
     Mixin.version = version;
+    Mixin.Extension = Mixin(Extension).toFunction();
 
-
-    Mixin.config(module.config());
     return Mixin;
 });
