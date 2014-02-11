@@ -1,6 +1,6 @@
 define(function () {
 
-    var version = "1.1.0";
+    var version = "1.1.1";
     var mixinProperty = "__mixin";
     var Mapping = {
         set: function (target, mixin) {

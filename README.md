@@ -1,4 +1,4 @@
-# mixin.js - 1.1.0
+# mixin.js - 1.1.1
 
 This small lib contains prototypal inheritance and multiple inheritance support to ease the pain by creating complex javascript applications.
 
