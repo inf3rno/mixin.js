@@ -1,15 +1,5 @@
 define(["inheritance"], function (Inheritance) {
 
-    describe("jasmine behavior about exceptions", function () {
-        it("should not late bind the evaluation of toThrow", function () {
-            var i = 2;
-            while (i--)
-                expect(function () {
-                    throw new Error(i);
-                }).toThrow(String(i))
-        });
-    });
-
     describe("new Inheritance(source) behavior with depending on validity of the sources", function () {
 
         it("should not accept invalid sources", function () {
@@ -392,78 +382,6 @@ define(["inheritance"], function (Inheritance) {
             expect(wQ.hasInstance(r)).toBeFalsy();
             expect(wR.hasInstance(r)).toBeTruthy();
         });
-    });
-
-    describe("Inheritance.Extension(options)", function () {
-
-        var Target = function () {
-        };
-        var proto = Target.prototype;
-        var key = "property";
-        var value = function () {
-        };
-        var source = {};
-        source[key] = value;
-        var extension = new Inheritance.Extension({
-            target: Target,
-            source: source
-        });
-
-        it("should not enable extensions by default", function () {
-            expect(proto[key]).toBeUndefined();
-            expect(extension.isEnabled).toBeFalsy();
-        });
-
-        it("should enable extension by enable()", function () {
-            extension.enable();
-            expect(proto[key]).toBeDefined();
-            expect(extension.isEnabled).toBeTruthy();
-        });
-
-        it("should restore undefined by disable()", function () {
-            extension.disable();
-            expect(proto[key]).toBeUndefined();
-            expect(extension.isEnabled).toBeFalsy();
-        });
-
-        it("should restore original value by disable()", function () {
-            proto[key] = 123;
-            extension.enable();
-            expect(proto[key] instanceof Function).toBeTruthy();
-            extension.disable();
-            expect(proto[key]).toEqual(123);
-            delete(proto[key]);
-        });
-
-        it("should not restore value by disable() if something overrides the enabled value", function () {
-            proto[key] = 123;
-            extension.enable();
-            expect(proto[key] instanceof Function).toBeTruthy();
-            proto[key] = 321;
-            extension.disable();
-            expect(proto[key]).toEqual(321);
-            delete(proto[key]);
-        });
-
-        it("should not behave different by calling enable() and disable() series", function () {
-            extension.enable();
-            extension.enable();
-            expect(proto[key]).toBeDefined();
-            expect(extension.isEnabled).toBeTruthy();
-            extension.disable();
-            extension.disable();
-            expect(proto[key]).toBeUndefined();
-            expect(extension.isEnabled).toBeFalsy();
-        });
-
-        it("should enable extension by config()", function () {
-            extension.config({
-                isEnabled: true
-            });
-            expect(extension.isEnabled).toBeTruthy();
-            extension.disable();
-        });
-
     });
 
 });

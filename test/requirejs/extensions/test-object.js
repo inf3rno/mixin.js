@@ -1,8 +1,8 @@
-define(["inheritance-object"], function (ObjectExtension) {
+define(["inheritance-object"], function (extension) {
 
     describe("ObjectExtension", function () {
         it("Enables functions in Object.prototype", function () {
-            ObjectExtension.enable();
+            extension.enable();
             var Ancestor = function () {
             };
             var ancestorProto = {
@@ -24,7 +24,7 @@ define(["inheritance-object"], function (ObjectExtension) {
             expect(descendant.instanceOf(descendantProto)).toBeTruthy();
             expect(ancestor.instanceOf(descendantProto)).toBeFalsy();
             expect(descendant.prop).toEqual(1);
-            ObjectExtension.disable();
+            extension.disable();
         });
     });
 

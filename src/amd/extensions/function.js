@@ -1,6 +1,6 @@
-define(["module", "inheritance"], function (module, Inheritance) {
+define(["module", "inheritance", "inheritance-extension"], function (module, Inheritance, Extension) {
 
-    FunctionExtension = new Inheritance.Extension({
+    var extension = new Extension({
         target: Function,
         source: {
             mixin: function () {
@@ -31,6 +31,6 @@ define(["module", "inheritance"], function (module, Inheritance) {
         }
     });
 
-    FunctionExtension.config(module.config());
-    return FunctionExtension;
+    extension.config(module.config());
+    return extension;
 });

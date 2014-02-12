@@ -8,6 +8,7 @@ requirejs.config({
     baseUrl: '/base',
     paths: {
         inheritance: "src/amd/inheritance",
+        "inheritance-extension": "src/amd/extension",
         "inheritance-function": "src/amd/extensions/function",
         "inheritance-object": "src/amd/extensions/object"
     },
