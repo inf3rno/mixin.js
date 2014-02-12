@@ -38,6 +38,7 @@ I developed the library using TDD, so the coverage must be about 100%, but I hav
 
 With the `Function.prototype` adapter:
 
+```js
     var GrandFather = Object.extend({
         age: 80,
         initialize: function (){
@@ -90,9 +91,11 @@ With the `Function.prototype` adapter:
 
     console.assert(GrandFather.hasDescendant(Mother));
     console.assert(!GrandMother.hasDescendant(fatherProto));
+```
 
 You can use the core `Wrapper` in a similar way.
 
+```js
     var GrandFather = Inheritance(Object).extend({
         age: 80,
         initialize: function (){
@@ -105,6 +108,7 @@ You can use the core `Wrapper` in a similar way.
     }).mixin({
         age: 75
     }).toFunction();
+```
 
 If you want to use a `Wrapper` function, you have to call the `Inheritance()` before. The arguments of the `Wrapper` functions are automatically wrapped.
 

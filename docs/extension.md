@@ -29,6 +29,7 @@ You can add a target object appender extension by instantiating the `Extension(o
 
 For example the following `extension` appends the `Function.prototype`.
 
+```js
     var extension = new Extension({
         target: Function,
         source: {
@@ -37,17 +38,22 @@ For example the following `extension` appends the `Function.prototype`.
             }
         }
     });
+`````
 
 This kind of `extension`s copy properties from a `source` to a `target` during the enabling procedure.
 
+```js
     extension.enable();
     console.assert(extension.isEnabled, "The extension should be enabled after calling the enable()");
     console.assert(Function.prototype.toObject instanceof Function, "Should copy the toObject function by enable.");
+```
 
 Disabling the `extension` should restore the original properties of the `target`.
 
+```js
     extension.disable();
     console.assert(!extension.isEnabled, "The extension should not be enabled after calling the disable()");
     console.assert(Function.prototype.toObject === undefined, "Should restore the undefined property of toObject by disable.");
+```
 
 Ofc. the `Extension` class is not always the best choice, but it works like charm by the `Function.prototype` and the `Object.prototype` adapters.

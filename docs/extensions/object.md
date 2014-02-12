@@ -17,6 +17,7 @@ This adapter extends the `Object.prototype` with the following functions:
 
 Example usage:
 
+```js
     var ancestor1 = {
         initialize: function (){
             this.a = 1;
@@ -44,5 +45,6 @@ Example usage:
     console.log(a); //{a:1}
     var d = new Descendant();
     console.log(d); //{a:1, b:2, c:3}
+```
 
 Of course your can combine this with the `Function.prototype` adapter if you want, but usually the `Function.prototype` adapter is more than enough, and nobody will like you if you override the `Object.prototype`.

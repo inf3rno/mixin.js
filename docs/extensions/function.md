@@ -8,15 +8,18 @@ If you want to know more about extensions please visit the [Inheritance Extensio
 
 This adapter extends the `Function.prototype` with the following functions:
 
+```js
     Function mixin(ancestor1, ancestor2, ...) - multiple inheritance
     Function extend(ancestor1, ancestor2, ...) - prototypal inheritance
     Boolean hasAncestors(ancestor1, ancestor2, ...) - ancestor check
     Boolean hasDescendants(descendant1, descendant2, ...) - descendant check
     Boolean hasInstance(instance) - instance check
     Object toObject() - returns the prototype
+```
 
 Example usage:
 
+```js
     var Ancestor1 = function (){
         this.a = 1;
     };
@@ -47,3 +50,4 @@ Example usage:
     console.log(a); //{a:1}
     var d = new Descendant();
     console.log(d); //{a:1, b:2, c:3, d:4}
+```
