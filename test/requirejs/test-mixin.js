@@ -22,7 +22,7 @@ define(["mixin"], function (Mixin) {
                 if (invalidSources.hasOwnProperty(type))
                     expect(function () {
                         new Mixin(invalidSources[type]);
-                    }).toThrow("Invalid source type of " + type + ".");
+                    }).toThrow("Invalid source type.");
         });
 
         it("should accept valid sources", function () {

@@ -1,72 +1,71 @@
 define(function () {
 
     var version = "1.1.1";
-    var mixinProperty = "__mixin";
-    var Mapping = {
+
+    var storeKey = "__mixin";
+    var MixinCache = {
         set: function (target, mixin) {
             if (Object.defineProperty)
-                Object.defineProperty(target, mixinProperty, {
+                Object.defineProperty(target, storeKey, {
                     value: mixin,
                     configurable: false,
                     enumerable: false,
                     writeable: false
                 });
             else
-                target[mixinProperty] = mixin
+                target[storeKey] = mixin
         },
         get: function (target) {
-            if (target)
-                return target[mixinProperty];
-            return null;
+            return target[storeKey];
         },
         has: function (target) {
-            return target && !!target[mixinProperty];
+            return target && (target instanceof Function) && !!target[storeKey];
         }
     };
 
-    var Mixable = {
+    var mixinPrototype = {
         constructor: function (source) {
-            if (!(this instanceof Mixin))
-                return new Mixin(source);
             if (source instanceof Mixin)
                 return source;
+            if (!(this instanceof Mixin))
+                return new Mixin(source);
 
-            var type = typeof(source);
-            var isValidSource = {
-                "object": true,
-                "undefined": true,
-                "function": true
-            }.hasOwnProperty(type);
-            if (!isValidSource)
-                throw new Error("Invalid source type of " + type + ".");
+            var isEmpty,
+                isPrimitive = true,
+                isPrototype = false;
+            isEmpty = source === undefined || source === null;
+            if (!isEmpty)
+                isPrimitive = typeof(source) != "object" && typeof(source) != "function";
+            if (!isPrimitive)
+                isPrototype = !(source instanceof Function) && source.constructor && source === source.constructor.prototype;
 
-            var isFunction = source instanceof Function;
-            var isPrototype = (type == "object" || type == "function") && source && source.constructor && source === source.constructor.prototype;
-
-            var target;
-            if (isFunction)
-                target = source;
+            if (isEmpty)
+                source = {};
+            else if (isPrimitive)
+                throw new Error("Invalid source type.");
             else if (isPrototype)
-                target = source.constructor;
+                source = source.constructor;
 
-            if (Mapping.has(target))
-                return Mapping.get(target);
+            if (MixinCache.has(source))
+                return MixinCache.get(source);
 
-            if (!target) {
-                if (!source)
-                    source = {};
-                target = function () {
-                    if (target.prototype.initialize instanceof Function)
-                        target.prototype.initialize.apply(this, arguments);
-                };
-                target.prototype = source;
-                this.hasGeneratedConstructor = true;
-            }
-            target.prototype.constructor = target;
-            Mapping.set(target, this);
-            this.target = target;
-            this.ancestors = [];
+            this.initialize(source);
             return this;
+        },
+        initialize: function (source) {
+            this.ancestors = [];
+            this.isNative = source instanceof Function;
+            if (this.isNative)
+                this.target = source;
+            else {
+                this.target = function () {
+                    if (source.initialize instanceof Function)
+                        source.initialize.apply(this, arguments);
+                };
+                this.target.prototype = source;
+            }
+            this.target.prototype.constructor = this.target;
+            MixinCache.set(this.target, this);
         },
         mixin: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
@@ -75,7 +74,7 @@ define(function () {
                 for (var property in ancestorPrototype)
                     if (ancestorPrototype[property] !== Object.prototype[property] && property !== "constructor")
                         this.target.prototype[property] = ancestorPrototype[property];
-                if (!ancestor.hasGeneratedConstructor)
+                if (ancestor.isNative)
                     this.target.prototype.initialize = ancestor.toFunction();
                 this.ancestors.push(ancestor);
             }
@@ -83,7 +82,7 @@ define(function () {
         },
         extend: function () {
             var descendantPrototype = Object.create(this.target.prototype);
-            if (!this.hasGeneratedConstructor)
+            if (this.isNative)
                 descendantPrototype.initialize = this.target;
             var descendant = new Mixin(descendantPrototype);
             descendant.ancestors.push(this);
@@ -117,9 +116,9 @@ define(function () {
         hasInstance: function (instance) {
             if (instance instanceof this.target)
                 return true;
-            if (!instance.constructor || !Mapping.has(instance.constructor))
-                return false;
-            return this.hasDescendants(Mapping.get(instance.constructor));
+            if (MixinCache.has(instance.constructor))
+                return this.hasDescendants(MixinCache.get(instance.constructor));
+            return false;
         },
         toFunction: function () {
             return this.target;
@@ -129,7 +128,7 @@ define(function () {
         }
     };
 
-    var Extension = {
+    var extensionPrototype = {
         target: null,
         source: null,
         backup: null,
@@ -177,10 +176,10 @@ define(function () {
         }
     };
 
-    var Mixin = Mixable.constructor;
-    Mixin.prototype = Mixable;
+    var Mixin = mixinPrototype.constructor;
+    Mixin.prototype = mixinPrototype;
     Mixin.version = version;
-    Mixin.Extension = Mixin(Extension).toFunction();
+    Mixin.Extension = Mixin(extensionPrototype).toFunction();
 
     return Mixin;
 });
