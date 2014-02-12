@@ -1,57 +1,36 @@
 define(function () {
 
-    var version = "1.1.1";
+    var Mixin = function (source) {
+        if (source instanceof Mixin)
+            return source;
+        if (!(this instanceof Mixin))
+            return new Mixin(source);
 
-    var storeKey = "__mixin";
-    var MixinCache = {
-        set: function (target, mixin) {
-            if (Object.defineProperty)
-                Object.defineProperty(target, storeKey, {
-                    value: mixin,
-                    configurable: false,
-                    enumerable: false,
-                    writeable: false
-                });
-            else
-                target[storeKey] = mixin
-        },
-        get: function (target) {
-            return target[storeKey];
-        },
-        has: function (target) {
-            return target && (target instanceof Function) && !!target[storeKey];
-        }
+        var isEmpty,
+            isPrimitive = true,
+            isPrototype = false;
+        isEmpty = source === undefined || source === null;
+        if (!isEmpty)
+            isPrimitive = typeof(source) != "object" && typeof(source) != "function";
+        if (!isPrimitive)
+            isPrototype = !(source instanceof Function) && source.constructor && source === source.constructor.prototype;
+
+        if (isEmpty)
+            source = {};
+        else if (isPrimitive)
+            throw new Error("Invalid source type.");
+        else if (isPrototype)
+            source = source.constructor;
+
+        if (Mixin.Cache.has(source))
+            return Mixin.Cache.get(source);
+
+        this.initialize(source);
+        return this;
     };
 
-    var mixinPrototype = {
-        constructor: function (source) {
-            if (source instanceof Mixin)
-                return source;
-            if (!(this instanceof Mixin))
-                return new Mixin(source);
-
-            var isEmpty,
-                isPrimitive = true,
-                isPrototype = false;
-            isEmpty = source === undefined || source === null;
-            if (!isEmpty)
-                isPrimitive = typeof(source) != "object" && typeof(source) != "function";
-            if (!isPrimitive)
-                isPrototype = !(source instanceof Function) && source.constructor && source === source.constructor.prototype;
-
-            if (isEmpty)
-                source = {};
-            else if (isPrimitive)
-                throw new Error("Invalid source type.");
-            else if (isPrototype)
-                source = source.constructor;
-
-            if (MixinCache.has(source))
-                return MixinCache.get(source);
-
-            this.initialize(source);
-            return this;
-        },
+    Mixin.prototype = {
+        constructor: Mixin,
         initialize: function (source) {
             this.ancestors = [];
             this.isNative = source instanceof Function;
@@ -65,7 +44,7 @@ define(function () {
                 this.target.prototype = source;
             }
             this.target.prototype.constructor = this.target;
-            MixinCache.set(this.target, this);
+            Mixin.Cache.set(this.target, this);
         },
         mixin: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
@@ -116,8 +95,8 @@ define(function () {
         hasInstance: function (instance) {
             if (instance instanceof this.target)
                 return true;
-            if (MixinCache.has(instance.constructor))
-                return this.hasDescendants(MixinCache.get(instance.constructor));
+            if (Mixin.Cache.has(instance.constructor))
+                return this.hasDescendants(Mixin.Cache.get(instance.constructor));
             return false;
         },
         toFunction: function () {
@@ -128,7 +107,28 @@ define(function () {
         }
     };
 
-    var extensionPrototype = {
+    Mixin.Cache = {
+        storeKey: "__mixin",
+        set: function (target, mixin) {
+            if (Object.defineProperty)
+                Object.defineProperty(target, this.storeKey, {
+                    value: mixin,
+                    configurable: false,
+                    enumerable: false,
+                    writeable: false
+                });
+            else
+                target[this.storeKey] = mixin
+        },
+        get: function (target) {
+            return target[this.storeKey];
+        },
+        has: function (target) {
+            return (target instanceof Function) && target[this.storeKey];
+        }
+    };
+
+    Mixin.Extension = Mixin({
         target: null,
         source: null,
         backup: null,
@@ -174,12 +174,8 @@ define(function () {
             if (options.isEnabled)
                 this.enable();
         }
-    };
+    }).toFunction();
 
-    var Mixin = mixinPrototype.constructor;
-    Mixin.prototype = mixinPrototype;
-    Mixin.version = version;
-    Mixin.Extension = Mixin(extensionPrototype).toFunction();
-
+    Mixin.version = "1.1.1";
     return Mixin;
 });
