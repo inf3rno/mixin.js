@@ -40,8 +40,8 @@ define(function () {
             if (!isValidSource)
                 throw new Error("Invalid source type of " + type + ".");
 
-            var isFunction = type == "function" && (source instanceof Function);
-            var isPrototype = type == "object" && source && source.constructor && source === source.constructor.prototype;
+            var isFunction = source instanceof Function;
+            var isPrototype = (type == "object" || type == "function") && source && source.constructor && source === source.constructor.prototype;
 
             var target;
             if (isFunction)

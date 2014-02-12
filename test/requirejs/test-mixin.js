@@ -88,6 +88,19 @@ define(["mixin"], function (Mixin) {
             expect(o).toBe(p);
         });
 
+        it("should work well with native prototypes and constructors", function () {
+            var Constructor = Function;
+            var p = Function.prototype;
+
+            var M = new Mixin(Constructor.prototype);
+            var F = M.toFunction();
+            var o = M.toObject();
+
+            expect(F).toBe(Constructor);
+            expect(o).toBe(Constructor.prototype);
+            expect(o).toBe(p);
+        });
+
         it("should create new constructor by non-prototypes", function () {
             var Constructor = function () {
             };
@@ -383,7 +396,8 @@ define(["mixin"], function (Mixin) {
 
     describe("Mixin.Extension(options)", function () {
 
-        var target = function (){};
+        var target = function () {
+        };
         var proto = target.prototype;
         var key = "property";
         var value = function () {
