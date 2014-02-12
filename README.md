@@ -1,12 +1,6 @@
-# mixin.js - 1.1.1
+# inheritance.js - 1.1.1
 
 This small lib contains prototypal inheritance and multiple inheritance support to ease the pain by creating complex javascript applications.
-
-# Warning!
-
-**If everything goes well, mixin.js will get a new name soon.**
-
-After that I'll add support for component management systems: npm, bower, jam, component, etc...
 
 ## Installation
 
@@ -14,13 +8,15 @@ There will be **standalone**, **commonJS** and **AMD** support. Currently only t
 
 There is nothing special about the installation, just choose one of the modules in the `src` folder and use it.
 
+I'll add support for component management systems: `npm`, `bower`, `jam`, `component`, etc...
+
 ### Supported platforms
 
 #### Browser support
 
 The library should work in **every browser**, because it uses core javascript only.
 
-I tested in firefox with require.js. If you have troubles with other browsers, please [send me a report](https://github.com/inf3rno/mixin.js/issues/1)!
+I tested in firefox with require.js. If you have troubles with other browsers, please [send me a report](https://github.com/inf3rno/inheritance.js/issues/1)!
 
 #### NodeJS support
 
@@ -30,46 +26,46 @@ Is coming with commonJS support and npm registration...
 
 ### Instantiation
 
-You can use the `Mixin()` function to create new `Mixin` instances.
+You can use the `Inheritance()` function to create new `Inheritance` instances.
 
-	var mixin = Mixin(source);
-	var mixin2 = new Mixin(source2);
+	var wrapper = Inheritance(source);
+	var wrapper2 = new Inheritance(source2);
 
 The `source` can be an instance of `Object`, `Function` or `null` or `undefined`.
 
-    var mixin = new Mixin();
-    var mixin2 = new Mixin({a: 1});
-    var mixin3 = new Mixin(function (){});
+    var wrapper = new Inheritance();
+    var wrapper2 = new Inheritance({a: 1});
+    var wrapper3 = new Inheritance(function (){});
     // etc...
 
-The `Mixin` functions are always working on a `constructor`.
+The `Inheritance` functions are always working on a `constructor`.
 You can use the `toFunction()` to get the `constructor` and the `toObject()` to get its `prototype`.
 
     var func = function (){};
-    var mixin = new Mixin(func);
-    console.assert(func === mixin.toFunction(), "The toFunction() should return the constructor.");
-    console.assert(func.prototype === mixin.toObject(), "The toObject() should return the prototype.");
+    var wrapper = new Inheritance(func);
+    console.assert(func === wrapper.toFunction(), "The toFunction() should return the constructor.");
+    console.assert(func.prototype === wrapper.toObject(), "The toObject() should return the prototype.");
 
-If you pass a `prototype` then `Mixin()` will find its `constructor`.
+If you pass a `prototype` then `Inheritance()` will find its `constructor`.
 
     var func = function (){};
-    var mixin = new Mixin(func.prototype);
-    console.assert(func === mixin.toFunction(), "Mixin(prototype) should find the constructor of the prototype.");
+    var wrapper = new Inheritance(func.prototype);
+    console.assert(func === wrapper.toFunction(), "Inheritance(prototype) should find the constructor of the prototype.");
 
-If you pass a regular `object` (not a `prototype`) to the `Mixin()`, then it will generate a `constructor` for it. After that the `object` will be a `prototype`.
+If you pass a regular `object` (not a `prototype`) to the `Inheritance()`, then it will generate a `constructor` for it. After that the `object` will be a `prototype`.
 
     var object = {a: 1};
-    var mixin = new Mixin(object);
-    var func = mixin.toFunction();
+    var wrapper = new Inheritance(object);
+    var func = wrapper.toFunction();
     console.assert(object.constructor === func);
     console.assert(func.prototype === object);
 
-Ofc. you can use not just object literals, `constructor` generation works by any objects... So you can combine `Mixin` with libs using any other inheritance approaches.
+Ofc. you can use not just object literals, `constructor` generation works by any objects... So you can combine `Inheritance` with libs using any other inheritance approaches.
 
     var ancestor = function (){};
         ancestor.prototype = {a: 1};
     var object = new Ancestor();
-    var func = Mixin(object).toFunction();
+    var func = Inheritance(object).toFunction();
     var instance = new func();
     console.assert(instance.a === ancestor.prototype.a, "Custom prototypal inheritance approach should work.");
 
@@ -80,32 +76,32 @@ If you set an `initialize()` function on the `object` you pass, then the newly g
             console.log("Created a new instance.");
         }
     };
-    var mixin = new Mixin(object);
-    var func = mixin.toFunction();
+    var wrapper = new Inheritance(object);
+    var func = wrapper.toFunction();
     console.assert(func !== object.initialize, "The constructor and the initialize should not be the same.");
     var instance = new func(); //console: "Created a new instance." (the constructor called the initialize)
 
 ### Multiple inheritance
 
-You can achieve multiple inheritance by using the `mixin()` function. The ancestor parameters can be `Mixin` instances or `source`s which can be used by `Mixin()`.
+You can achieve multiple inheritance by using the `mixin()` function. The ancestor parameters can be `Inheritance` instances or `source`s which can be used by `Inheritance()`.
 
-	var Ancestor1 = new Mixin({a: 1});
+	var Ancestor1 = new Inheritance({a: 1});
 	var Ancestor2 = function (){
 	    console.log("Created new instance.");
 	};
 	Ancestor2.prototype = {b: 2};
 	var Ancestor3 = {c: 3};
 
-	var mixin = new Mixin();
-	mixin.mixin(Ancestor1, Ancestor2, Ancestor3);
-	var Descendant = mixin.toFunction();
+	var wrapper = new Inheritance();
+	wrapper.mixin(Ancestor1, Ancestor2, Ancestor3);
+	var Descendant = wrapper.toFunction();
 	var instance = new Descendant(); //console: "Created a new instance."
 	console.log(instance); //{initialize: Ancestor2, a: 1, b: 2, c: 3}
 
 The multiple inheritance always copies the values, so the posterior modifications of the sources won't affect the descendant.
 
-	var ancestor = new Mixin({a: 1});
-	var descendant = new Mixin();
+	var ancestor = new Inheritance({a: 1});
+	var descendant = new Inheritance();
 	descendant.mixin(ancestor);
 	ancestor.mixin({b: 2});
 
@@ -115,9 +111,9 @@ The multiple inheritance always copies the values, so the posterior modification
 Ofc. this value copy has no effect on complex cases for example like the following.
 
     var object = {x: 0};
-	var ancestor = new Mixin(Object.create(object));
+	var ancestor = new Inheritance(Object.create(object));
 	ancestor.mixin({a: 1});
-	var descendant = new Mixin();
+	var descendant = new Inheritance();
 	descendant.mixin(ancestor);
 	ancestor.mixin({b: 2});
 	object.y = -1;
@@ -132,7 +128,7 @@ It is not recommended by any language to modify ancestor classes latter, because
 
 You can achieve prototypal inheritance by using the `extend()` function. This will create a source with `Object.create()` and generate a new `constructor` for that.
 
-	var ancestor = new Mixin(function (){
+	var ancestor = new Inheritance(function (){
 		console.log("Created a new instance.");
 	});
 	var descendant = ancestor.extend();
@@ -143,7 +139,7 @@ If the `constructor` of the ancestor is native, then by default the `extend()` s
 
 By prototypal inheritance, the posterior changes of the ancestor will affect the descendant.
 
-    var ancestor = new Mixin({
+    var ancestor = new Inheritance({
         a: 1
     });
     var descendant = ancestor.extend({
@@ -160,7 +156,7 @@ By prototypal inheritance, the posterior changes of the ancestor will affect the
 
 Ofc. you can use prototypal and multiple inheritances in any combination.
 
-	var ancestor = new Mixin(function (){
+	var ancestor = new Inheritance(function (){
 		console.log("Created a new instance.");
 	});
 	ancestor.mixin({
@@ -184,18 +180,18 @@ Calling the `constructor` of every ancestor is almost the same as usual.
     var Ancestor1 = function (){
         this.a = 1;
     };
-    var Ancestor2 = Mixin({
+    var Ancestor2 = Inheritance({
         initialize: function (){
             this.b = 2;
         }
     }).toFunction();
-    var Ancestor3 = Mixin({
+    var Ancestor3 = Inheritance({
         initialize: function (){
             this.c = 3;
         }
     }).toFunction();
-    var Ancestor4 = Mixin({}).toFunction();
-    var descendant = Mixin(Ancestor1).extend(
+    var Ancestor4 = Inheritance({}).toFunction();
+    var descendant = Inheritance(Ancestor1).extend(
         Ancestor2,
         Ancestor3,
         Ancestor4, {
@@ -219,27 +215,27 @@ As you can see I am not a big fan of the `super()` methods or anything like that
 
 You can use 3 functions in order to check type. Let's assume we have the following family tree.
 
-    var grandma = Mixin();
-    var grandpa = Mixin();
+    var grandma = Inheritance();
+    var grandpa = Inheritance();
     var mother = grandma.extend(grandpa);
-    var father = Mixin();
+    var father = Inheritance();
     var son = father.extend(mother);
     var daughter = mother.extend(father);
 
-The `Mixin.hasAncestors(source 1, source 2, ...)` returns `true` when the actual `Mixin` has every `source` amongst its ancestors.
+The `Inheritance.hasAncestors(source 1, source 2, ...)` returns `true` when the actual `Inheritance` has every `source` amongst its ancestors.
 
     console.assert(mother.hasAncestor(grandma, grandpa), "The mother should recognize her parents.");
     console.assert(son.hasAncestors(mother, father), "The son should recognize his parents.");
     console.assert(son.hasAncestors(grandma, grandpa), "The son should recognize his grandparents.");
 
-The `Mixin.hasDescendants(source 1, source 2, ...)` returns `true` when the actual `Mixin` has every `source` amongst its descendants.
+The `Inheritance.hasDescendants(source 1, source 2, ...)` returns `true` when the actual `Inheritance` has every `source` amongst its descendants.
 
     console.assert(mother.hasDescendants(son, daughter), "The mother should recognize her children.");
     console.assert(grandma.hasDescendants(mother), "The grandma should recognize her daughter.");
     console.assert(!grandma.hasDescendants(father), "The grandma should not recognize the husband of her daughter.");
     console.assert(grandma.hasDescendants(son, daughter), "The grandma should recognize his grandchildren.");
 
-The `Mixin.hasInstance(instance)` returns `true` when the actual `Mixin` contains the `constructor` the `instance` or contains one of the ancestors of the `constructor` of the `instance`.
+The `Inheritance.hasInstance(instance)` returns `true` when the actual `Inheritance` contains the `constructor` the `instance` or contains one of the ancestors of the `constructor` of the `instance`.
 
     var Son = son.toFunction();
     var me = new Son();
@@ -248,7 +244,7 @@ The `Mixin.hasInstance(instance)` returns `true` when the actual `Mixin` contain
 
 ### Extension support
 
-The main goal of extensions to adapt `Mixin` to the system you prefer. So these extensions are just adapters, they do not modify the behavior of `Mixin()`.
+The main goal of extensions to adapt `Inheritance` to the system you prefer. So these extensions are just adapters, they do not modify the behavior of `Inheritance()`.
 
 There isn't any restriction about how an extension should be implemented, however I recommend the following interface:
 
@@ -258,15 +254,15 @@ There isn't any restriction about how an extension should be implemented, howeve
     void enable() - enables the extension
     void disable() - disables the extension
 
-If you have your own idea, just use the `Mixin()` in your own adapter. There is nothing else to do.
+If you have your own idea, just use the `Inheritance()` in your own adapter. There is nothing else to do.
 
-#### Mixin.Extension
+#### Inheritance.Extension
 
-You can add a target object appender extension by instantiating the `Mixin.Extension(options)` `constructor`.
+You can add a target object appender extension by instantiating the `Inheritance.Extension(options)` `constructor`.
 
 For example the following `extension` appends the `Function.prototype`.
 
-    var extension = new Mixin.Extension({
+    var extension = new Inheritance.Extension({
         target: Function,
         source: {
             toObject: function (){
@@ -287,7 +283,7 @@ Disabling the `extension` should restore the original properties of the `target`
     console.assert(!extension.isEnabled, "The extension should not be enabled after calling the disable()");
     console.assert(Function.prototype.toObject === undefined, "Should restore the undefined property of toObject by disable.");
 
-Ofc. `Mixin.Extension` is not always the best choice, but it works like charm by the `Function.prototype` and the `Object.prototype` extensions.
+Ofc. `Inheritance.Extension` is not always the best choice, but it works like charm by the `Function.prototype` and the `Object.prototype` extensions.
 
 ## Extensions
 
@@ -381,8 +377,8 @@ Of course your can combine this with the `Function.prototype` extension if you w
 
 ## Contribution
 
-If you have found a bug, or you have an enhancement idea, please don't hesitate, [write it to me](https://github.com/inf3rno/mixin.js/issues).
+If you have found a bug, or you have an enhancement idea, please don't hesitate, [write it to me](https://github.com/inf3rno/inheritance.js/issues).
 
 ## License
 
-Mixin.js is licensed under the [WTFPL](http://www.wtfpl.net/) license, so feel free to do wtf you want with it... ;-)
+Inheritance.js is licensed under the [WTFPL](http://www.wtfpl.net/) license, so feel free to do wtf you want with it... ;-)

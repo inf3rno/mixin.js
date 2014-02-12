@@ -1,12 +1,12 @@
 define(function () {
 
-    var Mixin = function (source) {
-        if (source instanceof Mixin)
+    var Inheritance = function (source) {
+        if (source instanceof Inheritance)
             return source;
-        if (!(this instanceof Mixin))
-            return new Mixin(source);
+        if (!(this instanceof Inheritance))
+            return new Inheritance(source);
 
-        var isEmpty,
+        var isEmpty = true,
             isPrimitive = true,
             isPrototype = false;
         isEmpty = source === undefined || source === null;
@@ -22,15 +22,15 @@ define(function () {
         else if (isPrototype)
             source = source.constructor;
 
-        if (Mixin.Cache.has(source))
-            return Mixin.Cache.get(source);
+        if (Inheritance.Cache.has(source))
+            return Inheritance.Cache.get(source);
 
         this.initialize(source);
         return this;
     };
 
-    Mixin.prototype = {
-        constructor: Mixin,
+    Inheritance.prototype = {
+        constructor: Inheritance,
         initialize: function (source) {
             this.ancestors = [];
             this.isNative = source instanceof Function;
@@ -44,11 +44,11 @@ define(function () {
                 this.target.prototype = source;
             }
             this.target.prototype.constructor = this.target;
-            Mixin.Cache.set(this.target, this);
+            Inheritance.Cache.set(this.target, this);
         },
         mixin: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
-                var ancestor = new Mixin(arguments[index]);
+                var ancestor = new Inheritance(arguments[index]);
                 var ancestorPrototype = ancestor.toObject();
                 for (var property in ancestorPrototype)
                     if (ancestorPrototype[property] !== Object.prototype[property] && property !== "constructor")
@@ -63,7 +63,7 @@ define(function () {
             var descendantPrototype = Object.create(this.target.prototype);
             if (this.isNative)
                 descendantPrototype.initialize = this.target;
-            var descendant = new Mixin(descendantPrototype);
+            var descendant = new Inheritance(descendantPrototype);
             descendant.ancestors.push(this);
             descendant.mixin.apply(descendant, arguments);
             return descendant;
@@ -71,7 +71,7 @@ define(function () {
         hasAncestors: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
                 var found = false;
-                var possibleAncestor = new Mixin(arguments[index]);
+                var possibleAncestor = new Inheritance(arguments[index]);
                 for (var ancestorIndex = 0, ancestorCount = this.ancestors.length; ancestorIndex < ancestorCount; ++ancestorIndex) {
                     var ancestor = this.ancestors[ancestorIndex];
                     if (ancestor === possibleAncestor || ancestor.hasAncestors(possibleAncestor)) {
@@ -86,7 +86,7 @@ define(function () {
         },
         hasDescendants: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
-                var possibleDescendant = new Mixin(arguments[index]);
+                var possibleDescendant = new Inheritance(arguments[index]);
                 if (!possibleDescendant.hasAncestors(this))
                     return false;
             }
@@ -95,8 +95,8 @@ define(function () {
         hasInstance: function (instance) {
             if (instance instanceof this.target)
                 return true;
-            if (Mixin.Cache.has(instance.constructor))
-                return this.hasDescendants(Mixin.Cache.get(instance.constructor));
+            if (Inheritance.Cache.has(instance.constructor))
+                return this.hasDescendants(Inheritance.Cache.get(instance.constructor));
             return false;
         },
         toFunction: function () {
@@ -107,18 +107,18 @@ define(function () {
         }
     };
 
-    Mixin.Cache = {
-        storeKey: "__mixin",
-        set: function (target, mixin) {
+    Inheritance.Cache = {
+        storeKey: "__inheritance",
+        set: function (target, inheritance) {
             if (Object.defineProperty)
                 Object.defineProperty(target, this.storeKey, {
-                    value: mixin,
+                    value: inheritance,
                     configurable: false,
                     enumerable: false,
                     writeable: false
                 });
             else
-                target[this.storeKey] = mixin
+                target[this.storeKey] = inheritance
         },
         get: function (target) {
             return target[this.storeKey];
@@ -128,7 +128,7 @@ define(function () {
         }
     };
 
-    Mixin.Extension = Mixin({
+    Inheritance.Extension = Inheritance({
         target: null,
         source: null,
         backup: null,
@@ -145,7 +145,7 @@ define(function () {
             for (var property in this.source)
                 if (this.source.hasOwnProperty(property) && this.target.hasOwnProperty(property) && property !== "constructor")
                     this.backup[property] = this.target[property];
-            Mixin(this.target).mixin(this.source);
+            Inheritance(this.target).mixin(this.source);
             this.isEnabled = true;
         },
         disable: function () {
@@ -168,14 +168,14 @@ define(function () {
             if (!options)
                 return;
             if (options.target)
-                this.target = Mixin(options.target).toObject();
+                this.target = Inheritance(options.target).toObject();
             if (options.source)
-                this.source = Mixin(options.source).toObject();
+                this.source = Inheritance(options.source).toObject();
             if (options.isEnabled)
                 this.enable();
         }
     }).toFunction();
 
-    Mixin.version = "1.1.1";
-    return Mixin;
+    Inheritance.version = "1.1.1";
+    return Inheritance;
 });

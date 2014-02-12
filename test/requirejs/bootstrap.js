@@ -7,9 +7,9 @@ for (var file in window.__karma__.files)
 requirejs.config({
     baseUrl: '/base',
     paths: {
-        mixin: "src/amd/mixin",
-        "mixin-function": "src/amd/extensions/function",
-        "mixin-object": "src/amd/extensions/object"
+        inheritance: "src/amd/inheritance",
+        "inheritance-function": "src/amd/extensions/function",
+        "inheritance-object": "src/amd/extensions/object"
     },
     deps: tests,
     callback: window.__karma__.start

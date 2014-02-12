@@ -1,29 +1,29 @@
-define(["mixin-object"], function (ObjectExtension) {
+define(["inheritance-object"], function (ObjectExtension) {
 
-    describe("FunctionExtension", function () {
-        it("Enables functions in Function.prototype", function () {
+    describe("ObjectExtension", function () {
+        it("Enables functions in Object.prototype", function () {
             ObjectExtension.enable();
-            var f = function () {
+            var Ancestor = function () {
             };
-            var p = {
-                constructor: f
+            var ancestorProto = {
+                constructor: Ancestor
             };
-            f.prototype = p;
-            var o = new f();
-            expect(p.toFunction()).toBe(f);
-            expect(o.instanceOf(p)).toBeTruthy();
-            expect(o.instanceOf(f)).toBeTruthy();
-            var p2 = p.extend({
-                a: 1
+            Ancestor.prototype = ancestorProto;
+            var ancestor = new Ancestor();
+            expect(ancestorProto.toFunction()).toBe(Ancestor);
+            expect(ancestor.instanceOf(ancestorProto)).toBeTruthy();
+            expect(ancestor.instanceOf(Ancestor)).toBeTruthy();
+            var descendantProto = ancestorProto.extend({
+                prop: 1
             });
-            var f2 = p2.toFunction();
-            var o2 = new f2();
-            expect(p2.hasAncestors(p)).toBeTruthy();
-            expect(p.hasDescendants(p2)).toBeTruthy();
-            expect(o2.instanceOf(p)).toBeTruthy();
-            expect(o2.instanceOf(p2)).toBeTruthy();
-            expect(o.instanceOf(p2)).toBeFalsy();
-            expect(o2.a).toEqual(1);
+            var Descendant = descendantProto.toFunction();
+            var descendant = new Descendant();
+            expect(descendantProto.hasAncestors(ancestorProto)).toBeTruthy();
+            expect(ancestorProto.hasDescendants(descendantProto)).toBeTruthy();
+            expect(descendant.instanceOf(ancestorProto)).toBeTruthy();
+            expect(descendant.instanceOf(descendantProto)).toBeTruthy();
+            expect(ancestor.instanceOf(descendantProto)).toBeFalsy();
+            expect(descendant.prop).toEqual(1);
             ObjectExtension.disable();
         });
     });
