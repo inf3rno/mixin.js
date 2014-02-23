@@ -1,6 +1,6 @@
-define(["inheritance"], function (Inheritance) {
+define(["inheritance"], function (wrap) {
 
-    describe("new Inheritance(source) behavior with depending on validity of the sources", function () {
+    describe("Inheritance(source) behavior with depending on validity of the sources", function () {
 
         it("should not accept invalid sources", function () {
             var invalidSources = {
@@ -11,7 +11,7 @@ define(["inheritance"], function (Inheritance) {
             for (var type in invalidSources)
                 if (invalidSources.hasOwnProperty(type))
                     expect(function () {
-                        new Inheritance(invalidSources[type]);
+                        wrap(invalidSources[type]);
                     }).toThrow("Invalid source type.");
         });
 
@@ -33,12 +33,12 @@ define(["inheritance"], function (Inheritance) {
             for (var type in validSources)
                 if (validSources.hasOwnProperty(type))
                     expect(function () {
-                        new Inheritance(validSources[type]);
+                        wrap(validSources[type]);
                     }).not.toThrow();
         });
 
         it("should work if called as function", function () {
-            expect(Inheritance({a: 1}) instanceof Inheritance).toBeTruthy();
+            expect(wrap({a: 1}) instanceof wrap.Wrapper).toBeTruthy();
         });
     });
 
@@ -51,7 +51,7 @@ define(["inheritance"], function (Inheritance) {
                 p: 1
             };
             Constr.prototype = proto;
-            var wrapper = new Inheritance(Constr);
+            var wrapper = wrap(Constr);
             var Func = wrapper.toFunction();
             var obj = wrapper.toObject();
 
@@ -69,7 +69,7 @@ define(["inheritance"], function (Inheritance) {
                 p: 1
             };
             Constr.prototype = proto;
-            var wrapper = new Inheritance(Constr.prototype);
+            var wrapper = wrap(Constr.prototype);
             var Func = wrapper.toFunction();
             var obj = wrapper.toObject();
 
@@ -82,7 +82,7 @@ define(["inheritance"], function (Inheritance) {
             var Constr = Function;
             var proto = Function.prototype;
 
-            var wrapper = new Inheritance(Constr.prototype);
+            var wrapper = wrap(Constr.prototype);
             var Func = wrapper.toFunction();
             var obj = wrapper.toObject();
 
@@ -107,7 +107,7 @@ define(["inheritance"], function (Inheritance) {
             for (var type in nonPrototypeSources)
                 if (nonPrototypeSources.hasOwnProperty(type)) {
                     var source = nonPrototypeSources[type];
-                    var wrapper = new Inheritance(source);
+                    var wrapper = wrap(source);
                     var Func = wrapper.toFunction();
 
                     expect(Func instanceof Function).toBeTruthy();
@@ -122,7 +122,7 @@ define(["inheritance"], function (Inheritance) {
 
         it("should not do anything by instantiation if the old constructor was empty", function () {
             var source = Object.create(null);
-            var wrapper = new Inheritance(source);
+            var wrapper = wrap(source);
             expect(function () {
                 var Constr = wrapper.toFunction();
                 new Constr();
@@ -131,7 +131,7 @@ define(["inheritance"], function (Inheritance) {
 
         it("should pass the arguments by instantiation", function () {
             var spy = jasmine.createSpy("mock constructor");
-            var wrapper = new Inheritance(spy);
+            var wrapper = wrap(spy);
             var instance = new spy("a", "b");
             expect(spy).toHaveBeenCalledWith("a", "b");
         });
@@ -140,7 +140,7 @@ define(["inheritance"], function (Inheritance) {
 
     describe("Inheritance.mixin(source 1, source 2, ... source i) behavior with valid sources", function () {
 
-        it("should mixin properties with the source or the prototype of the source", function () {
+        it("should override properties with the source or the prototype of the source", function () {
             var sources = {
                 "object": {},
                 "prototype": function () {
@@ -149,13 +149,13 @@ define(["inheritance"], function (Inheritance) {
             for (var name in sources)
                 if (sources.hasOwnProperty(name)) {
                     var source = sources[name];
-                    var wrapper = new Inheritance(source);
+                    var wrapper = wrap(source);
                     wrapper.mixin({name: name}, {a: 0, b: 2}, {a: 1, c: 3}, {d: 4});
                     expect(source).toEqual({name: name, a: 1, b: 2, c: 3, d: 4});
                 }
         });
 
-        it("should mixin, but not call initialize by sources with non-generated constructor", function () {
+        it("should override, but not call initialize by sources with non-generated constructor", function () {
             var Constr = function () {
             };
             var sources = {
@@ -165,7 +165,7 @@ define(["inheritance"], function (Inheritance) {
             for (var type in sources)
                 if (sources.hasOwnProperty(type))
                     expect(function () {
-                        var wrapper = new Inheritance(sources[type])
+                        var wrapper = wrap(sources[type])
                         wrapper.mixin(function () {
                             throw new Error("$");
                         });
@@ -184,7 +184,7 @@ define(["inheritance"], function (Inheritance) {
                 this.b = 2;
             };
             Ancestor2.prototype.y = 2;
-            var descendantWrapper = new Inheritance();
+            var descendantWrapper = wrap();
             var aggregatedInit = function () {
                 Ancestor1.call(this);
                 Ancestor2.call(this);
@@ -205,7 +205,7 @@ define(["inheritance"], function (Inheritance) {
             var Ancestor = function () {
                 throw new Error("$");
             };
-            var ancestorWrapper = new Inheritance(Ancestor);
+            var ancestorWrapper = wrap(Ancestor);
             var descendantWrapper = ancestorWrapper.extend();
             var Descendant = descendantWrapper.toFunction();
             expect(Descendant.prototype).toEqual({initialize: Ancestor});
@@ -220,7 +220,7 @@ define(["inheritance"], function (Inheritance) {
                     throw new Error("$");
                 }
             };
-            var ancestorWrapper = new Inheritance(ancestorProto);
+            var ancestorWrapper = wrap(ancestorProto);
             var descendantWrapper = ancestorWrapper.extend();
             var Descendant = descendantWrapper.toFunction();
             expect(Descendant.prototype).toEqual({initialize: ancestorProto.initialize});
@@ -235,7 +235,7 @@ define(["inheritance"], function (Inheritance) {
             Ancestor.prototype = {
                 a: 1
             };
-            var ancestorWrapper = new Inheritance(Ancestor);
+            var ancestorWrapper = wrap(Ancestor);
             var descendantWrapper = ancestorWrapper.extend({b: 2});
             var Descendant = descendantWrapper.toFunction();
             var ancestor = new Ancestor();
@@ -249,14 +249,14 @@ define(["inheritance"], function (Inheritance) {
         });
 
         it("should set the constructor property automatically", function () {
-            var ancestorWrapper1 = new Inheritance({});
+            var ancestorWrapper1 = wrap({});
             var Ancestor1 = ancestorWrapper1.toFunction();
             var ancestor1 = new Ancestor1();
             expect(ancestor1.constructor).toBe(Ancestor1);
 
             var Ancestor2 = function () {
             };
-            var ancestorWrapper2 = new Inheritance(Ancestor2);
+            var ancestorWrapper2 = wrap(Ancestor2);
             var ancestor2 = new Ancestor2();
             expect(ancestor2.constructor).toBe(Ancestor2);
 
@@ -267,7 +267,7 @@ define(["inheritance"], function (Inheritance) {
         });
 
         it("should call initialize of the ancestor if its generated constructor is called in a context of a descendant instance", function () {
-            var ancestorWrapper = new Inheritance({
+            var ancestorWrapper = wrap({
                 initialize: function () {
                     this.a = 1;
                 }
@@ -288,7 +288,7 @@ define(["inheritance"], function (Inheritance) {
 
     describe("Inheritance.hasAncestors(source 1, source 2, ...)", function () {
         it("should know whether it inherits from an ancestor or not", function () {
-            var wA = new Inheritance();
+            var wA = wrap();
             expect(wA.hasAncestors(wA)).toBeFalsy();
             var wB = wA.extend();
             expect(wB.hasAncestors(wA)).toBeTruthy();
@@ -299,11 +299,11 @@ define(["inheritance"], function (Inheritance) {
             expect(wA.hasAncestors(wC)).toBeFalsy();
             expect(wB.hasAncestors(wC)).toBeFalsy();
 
-            var wI = new Inheritance();
-            var wJ = Inheritance().extend(wI);
+            var wI = wrap();
+            var wJ = wrap().extend(wI);
             expect(wJ.hasAncestors(wI)).toBeTruthy();
             expect(wI.hasAncestors(wJ)).toBeFalsy();
-            var wK = Inheritance().extend(wJ);
+            var wK = wrap().extend(wJ);
             expect(wK.hasAncestors(wI)).toBeTruthy();
             expect(wK.hasAncestors(wJ)).toBeTruthy();
             expect(wI.hasAncestors(wK)).toBeFalsy();
@@ -322,16 +322,16 @@ define(["inheritance"], function (Inheritance) {
 
     describe("Inheritance.hasDescendants(source 1, source 2, ...)", function () {
         it("should know whether it inherits to a descendant or not", function () {
-            var wA = new Inheritance();
+            var wA = wrap();
             var wB = wA.extend();
             var wC = wB.extend();
             expect(wB.hasDescendants(wA)).toBeFalsy();
             expect(wB.hasDescendants(wB)).toBeFalsy();
             expect(wB.hasDescendants(wC)).toBeTruthy();
 
-            var wI = new Inheritance();
-            var wJ = Inheritance().extend(wI);
-            var wK = Inheritance().extend(wJ);
+            var wI = wrap();
+            var wJ = wrap().extend(wI);
+            var wK = wrap().extend(wJ);
             expect(wJ.hasDescendants(wI)).toBeFalsy();
             expect(wJ.hasDescendants(wJ)).toBeFalsy();
             expect(wJ.hasDescendants(wK)).toBeTruthy();
@@ -353,13 +353,13 @@ define(["inheritance"], function (Inheritance) {
 
     describe("Inheritance.hasInstance(instance)", function () {
         it("should know whether it or its descendant has an instance", function () {
-            var wA = new Inheritance();
+            var wA = wrap();
             var wB = wA.extend();
             var wC = wB.extend();
 
-            var wI = new Inheritance();
-            var wJ = Inheritance().extend(wI);
-            var wK = Inheritance().extend(wJ);
+            var wI = wrap();
+            var wJ = wrap().extend(wI);
+            var wK = wrap().extend(wJ);
 
             var wP = wA.extend(wI);
             var wQ = wB.extend(wJ);
@@ -367,7 +367,7 @@ define(["inheritance"], function (Inheritance) {
 
             var C = wC.toFunction();
             var c = new C();
-            expect(Inheritance().hasInstance(c)).toBeFalsy();
+            expect(wrap().hasInstance(c)).toBeFalsy();
             expect(wA.hasInstance(c)).toBeTruthy();
 
             var K = wK.toFunction();

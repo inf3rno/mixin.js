@@ -1,41 +1,40 @@
-define(["module", "inheritance", "inheritance-extension"], function (module, Inheritance, Extension) {
+define(["module", "inheritance", "inheritance-decorator"], function (module, wrap, PrototypeDecorator) {
 
-    var extension = new Extension({
+    var objectDecorator = new PrototypeDecorator({
         target: Object,
         source: {
             mixin: function () {
-                var descendant = new Inheritance(this);
+                var descendant = wrap(this);
                 descendant.mixin.apply(descendant, arguments);
                 return this;
             },
             extend: function () {
-                var ancestor = new Inheritance(this);
+                var ancestor = wrap(this);
                 var descendant = ancestor.extend.apply(ancestor, arguments);
                 return descendant.toObject();
             },
             hasAncestors: function () {
-                var descendant = new Inheritance(this);
+                var descendant = wrap(this);
                 return descendant.hasAncestors.apply(descendant, arguments);
             },
             hasDescendants: function () {
-                var ancestor = new Inheritance(this);
+                var ancestor = wrap(this);
                 return ancestor.hasDescendants.apply(ancestor, arguments);
             },
             instanceOf: function () {
                 for (var index = 0, length = arguments.length; index < length; ++index) {
-                    var ancestor = new Inheritance(arguments[index]);
+                    var ancestor = wrap(arguments[index]);
                     if (!ancestor.hasInstance(this))
                         return false;
                 }
                 return true;
             },
             toFunction: function () {
-                var mixin = new Inheritance(this);
-                return mixin.toFunction();
+                return wrap(this).toFunction();
             }
         }
     });
 
-    extension.config(module.config());
-    return extension;
+    objectDecorator.config(module.config());
+    return objectDecorator;
 });

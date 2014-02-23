@@ -6,6 +6,7 @@ module.exports = function (config) {
             {pattern: 'test/requirejs/bootstrap.js', included: true},
             {pattern: "test/requirejs/karma.conf.js", served: false},
             {pattern: 'test/requirejs/**/*.js', included: false},
+            {pattern: 'src/polyfill.js', included: true},
             {pattern: 'src/amd/**/*.js', included: false}
         ],
         exclude: [

@@ -1,6 +1,5 @@
-define(["inheritance"], function (Inheritance) {
-
-    var Extension = Inheritance({
+define(["inheritance"], function (wrap) {
+    return wrap({
         target: null,
         source: null,
         backup: null,
@@ -17,7 +16,7 @@ define(["inheritance"], function (Inheritance) {
             for (var property in this.source)
                 if (this.source.hasOwnProperty(property) && this.target.hasOwnProperty(property) && property !== "constructor")
                     this.backup[property] = this.target[property];
-            Inheritance(this.target).mixin(this.source);
+            wrap(this.target).mixin(this.source);
             this.isEnabled = true;
         },
         disable: function () {
@@ -40,13 +39,11 @@ define(["inheritance"], function (Inheritance) {
             if (!options)
                 return;
             if (options.target)
-                this.target = Inheritance(options.target).toObject();
+                this.target = wrap(options.target).toObject();
             if (options.source)
-                this.source = Inheritance(options.source).toObject();
+                this.source = wrap(options.source).toObject();
             if (options.isEnabled)
                 this.enable();
         }
     }).toFunction();
-
-    return Extension;
 });

@@ -1,54 +1,78 @@
 define(function () {
 
-    var Inheritance = function (source) {
-        if (source instanceof Inheritance)
-            return source;
-        if (!(this instanceof Inheritance))
-            return new Inheritance(source);
+    var WrapperFactory = function (options) {
+        if (options)
+            this.config(options);
+    };
+    WrapperFactory.prototype = {
+        constructor: WrapperFactory,
+        config: function (options) {
+            this.cache = options.cache;
+        },
+        createWrapper: function (source) {
+            var wrapper;
+            if (source instanceof Wrapper)
+                wrapper = source;
+            else {
+                var sanitizedSource = this.sanitizeSource(source);
+                wrapper = this.cacheWrapper(sanitizedSource) || this.newWrapper(sanitizedSource);
+            }
+            return wrapper;
+        },
+        sanitizeSource: function (source) {
+            var sanitizedSource;
 
-        var isEmpty = true,
-            isPrimitive = true,
-            isPrototype = false;
-        isEmpty = source === undefined || source === null;
-        if (!isEmpty)
-            isPrimitive = typeof(source) != "object" && typeof(source) != "function";
-        if (!isPrimitive)
-            isPrototype = !(source instanceof Function) && source.constructor && source === source.constructor.prototype;
+            var isEmpty = true,
+                isPrimitive = true,
+                isPrototype = false;
+            isEmpty = source === undefined || source === null;
+            if (!isEmpty)
+                isPrimitive = typeof(source) != "object" && typeof(source) != "function";
+            if (!isPrimitive)
+                isPrototype = !(source instanceof Function) && source.constructor && source === source.constructor.prototype;
 
-        if (isEmpty)
-            source = {};
-        else if (isPrimitive)
-            throw new Error("Invalid source type.");
-        else if (isPrototype)
-            source = source.constructor;
+            if (isEmpty)
+                sanitizedSource = {};
+            else if (isPrimitive)
+                throw new Error("Invalid source type.");
+            else if (isPrototype)
+                sanitizedSource = source.constructor;
+            else
+                sanitizedSource = source;
 
-        if (Inheritance.Cache.has(source))
-            return Inheritance.Cache.get(source);
-
-        this.initialize(source);
-        return this;
+            return sanitizedSource;
+        },
+        cacheWrapper: function (sanitizedSource) {
+            if ((sanitizedSource instanceof Function) && this.cache && this.cache.has(sanitizedSource))
+                return this.cache.get(sanitizedSource);
+        },
+        newWrapper: function (sanitizedSource) {
+            var wrapper = new Wrapper(sanitizedSource);
+            if (this.cache)
+                this.cache.set(wrapper.target, wrapper);
+            return wrapper;
+        }
     };
 
-    Inheritance.prototype = {
-        constructor: Inheritance,
-        initialize: function (source) {
-            this.ancestors = [];
-            this.isNative = source instanceof Function;
-            if (this.isNative)
-                this.target = source;
-            else {
-                this.target = function () {
-                    if (source.initialize instanceof Function)
-                        source.initialize.apply(this, arguments);
-                };
-                this.target.prototype = source;
-            }
-            this.target.prototype.constructor = this.target;
-            Inheritance.Cache.set(this.target, this);
-        },
+    var Wrapper = function (source) {
+        this.ancestors = [];
+        this.isNative = source instanceof Function;
+        if (this.isNative)
+            this.target = source;
+        else {
+            this.target = function () {
+                if (source.initialize instanceof Function)
+                    source.initialize.apply(this, arguments);
+            };
+            this.target.prototype = source;
+        }
+        this.target.prototype.constructor = this.target;
+    };
+    Wrapper.prototype = {
+        constructor: Wrapper,
         mixin: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
-                var ancestor = new Inheritance(arguments[index]);
+                var ancestor = wrap(arguments[index]);
                 var ancestorPrototype = ancestor.toObject();
                 for (var property in ancestorPrototype)
                     if (ancestorPrototype[property] !== Object.prototype[property] && property !== "constructor")
@@ -61,9 +85,9 @@ define(function () {
         },
         extend: function () {
             var descendantPrototype = Object.create(this.target.prototype);
-            if (this.isNative)
+            if (this.isNative && !(descendantPrototype.initialize instanceof Function))
                 descendantPrototype.initialize = this.target;
-            var descendant = new Inheritance(descendantPrototype);
+            var descendant = wrap(descendantPrototype);
             descendant.ancestors.push(this);
             descendant.mixin.apply(descendant, arguments);
             return descendant;
@@ -71,7 +95,7 @@ define(function () {
         hasAncestors: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
                 var found = false;
-                var possibleAncestor = new Inheritance(arguments[index]);
+                var possibleAncestor = wrap(arguments[index]);
                 for (var ancestorIndex = 0, ancestorCount = this.ancestors.length; ancestorIndex < ancestorCount; ++ancestorIndex) {
                     var ancestor = this.ancestors[ancestorIndex];
                     if (ancestor === possibleAncestor || ancestor.hasAncestors(possibleAncestor)) {
@@ -86,7 +110,7 @@ define(function () {
         },
         hasDescendants: function () {
             for (var index = 0, length = arguments.length; index < length; ++index) {
-                var possibleDescendant = new Inheritance(arguments[index]);
+                var possibleDescendant = wrap(arguments[index]);
                 if (!possibleDescendant.hasAncestors(this))
                     return false;
             }
@@ -95,9 +119,7 @@ define(function () {
         hasInstance: function (instance) {
             if (instance instanceof this.target)
                 return true;
-            if (Inheritance.Cache.has(instance.constructor))
-                return this.hasDescendants(Inheritance.Cache.get(instance.constructor));
-            return false;
+            return this.hasDescendants(wrap(instance.constructor));
         },
         toFunction: function () {
             return this.target;
@@ -107,27 +129,13 @@ define(function () {
         }
     };
 
-    Inheritance.Cache = {
-        storeKey: "__inheritance",
-        set: function (target, inheritance) {
-            if (Object.defineProperty)
-                Object.defineProperty(target, this.storeKey, {
-                    value: inheritance,
-                    configurable: false,
-                    enumerable: false,
-                    writeable: false
-                });
-            else
-                target[this.storeKey] = inheritance
-        },
-        get: function (target) {
-            return target[this.storeKey];
-        },
-        has: function (target) {
-            return (target instanceof Function) && target[this.storeKey];
-        }
+    var wrap = function (source) {
+        return wrap.factory.createWrapper.apply(wrap.factory, arguments);
     };
-
-    Inheritance.version = "1.1.1";
-    return Inheritance;
+    wrap.factory = new WrapperFactory({
+        cache: new WeakMap()
+    });
+    wrap.Wrapper = Wrapper;
+    wrap.WrapperFactory = WrapperFactory;
+    return wrap;
 });

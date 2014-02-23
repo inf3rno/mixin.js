@@ -1,28 +1,28 @@
-define(["module", "inheritance", "inheritance-extension"], function (module, Inheritance, Extension) {
+define(["module", "inheritance", "inheritance-decorator"], function (module, wrap, PrototypeDecorator) {
 
-    var extension = new Extension({
+    var functionDecorator = new PrototypeDecorator({
         target: Function,
         source: {
             mixin: function () {
-                var descendant = new Inheritance(this);
+                var descendant = wrap(this);
                 descendant.mixin.apply(descendant, arguments);
                 return this;
             },
             extend: function () {
-                var ancestor = new Inheritance(this);
+                var ancestor = wrap(this);
                 var descendant = ancestor.extend.apply(ancestor, arguments);
                 return descendant.toFunction();
             },
             hasAncestors: function () {
-                var descendant = new Inheritance(this);
+                var descendant = wrap(this);
                 return descendant.hasAncestors.apply(descendant, arguments);
             },
             hasDescendants: function () {
-                var ancestor = new Inheritance(this);
+                var ancestor = wrap(this);
                 return ancestor.hasDescendants.apply(ancestor, arguments);
             },
             hasInstance: function (instance) {
-                var ancestor = new Inheritance(this);
+                var ancestor = wrap(this);
                 return ancestor.hasInstance(instance);
             },
             toObject: function () {
@@ -31,6 +31,6 @@ define(["module", "inheritance", "inheritance-extension"], function (module, Inh
         }
     });
 
-    extension.config(module.config());
-    return extension;
+    functionDecorator.config(module.config());
+    return functionDecorator;
 });
