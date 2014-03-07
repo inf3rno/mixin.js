@@ -10,5 +10,5 @@ It is recommended to use *ES6* instead of this, if it is [supported](http://kang
 
 You can find the code under the `src/` directory.
 
-    - [polyfill.js](polyfill/index.md) - This file contains the javascript core requirements of the library for the case they are not implemented.
-    - [inheritance.js](inheritance/index.md) - This file contains the core of the library, multiple inheritance, prototypal inheritance and all of the related stuff.
+ - [polyfill.js](polyfill/index.md) - This file contains the javascript core requirements of the library for the case they are not implemented.
+ - [inheritance.js](inheritance/index.md) - This file contains the core of the library, multiple inheritance, prototypal inheritance and all of the related stuff.

@@ -50,7 +50,7 @@ which uses the [`factory`](docs/inheritance/index.md#factory) in order to create
 The `Wrapper` instances can manipulate the `prototype` of `constructor` functions.
 
 **I recommend you to create your own extension using [`Wrapper`](docs/inheritance/Wrapper.md) instances returned by the [`wrap()`](docs/inheritance/wrap.md) function, so you can use inheritance in your own style.
-I have already created a [`Function.prototype` extension](https://github.com/inf3rno/inheritancejs-function) and an [`Object.prototype` adapter](https://github.com/inf3rno/inheritancejs-object).
+I have already created a [`Function.prototype` extension](https://github.com/inf3rno/inheritancejs-function) and an [`Object.prototype` extension](https://github.com/inf3rno/inheritancejs-object).
 Both are derived from a base [`Extension`](https://github.com/inf3rno/inheritancejs-extension) class.**
 
 You can use the `Wrapper` instances the following way.
