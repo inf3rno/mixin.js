@@ -1,7 +1,7 @@
-define(["module", "inheritance", "inheritance-decorator"], function (module, wrap, PrototypeDecorator) {
+define(["module", "inheritance", "inheritance-extension"], function (module, wrap, Extension) {
 
-    var functionDecorator = new PrototypeDecorator({
-        target: Function,
+    var objectExtension = new Extension({
+        target: Object,
         source: {
             mixin: function () {
                 var descendant = wrap(this);
@@ -11,7 +11,7 @@ define(["module", "inheritance", "inheritance-decorator"], function (module, wra
             extend: function () {
                 var ancestor = wrap(this);
                 var descendant = ancestor.extend.apply(ancestor, arguments);
-                return descendant.toFunction();
+                return descendant.toObject();
             },
             hasAncestors: function () {
                 var descendant = wrap(this);
@@ -21,16 +21,20 @@ define(["module", "inheritance", "inheritance-decorator"], function (module, wra
                 var ancestor = wrap(this);
                 return ancestor.hasDescendants.apply(ancestor, arguments);
             },
-            hasInstance: function (instance) {
-                var ancestor = wrap(this);
-                return ancestor.hasInstance(instance);
+            instanceOf: function () {
+                for (var index = 0, length = arguments.length; index < length; ++index) {
+                    var ancestor = wrap(arguments[index]);
+                    if (!ancestor.hasInstance(this))
+                        return false;
+                }
+                return true;
             },
-            toObject: function () {
-                return this.prototype;
+            toFunction: function () {
+                return wrap(this).toFunction();
             }
         }
     });
 
-    functionDecorator.config(module.config());
-    return functionDecorator;
+    objectExtension.config(module.config());
+    return objectExtension;
 });

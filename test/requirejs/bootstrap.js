@@ -8,9 +8,9 @@ requirejs.config({
     baseUrl: '/base',
     paths: {
         inheritance: "src/amd/inheritance",
-        "inheritance-decorator": "src/amd/extensions/inheritance-decorator",
-        "inheritance-function": "src/amd/extensions/inheritance-function",
-        "inheritance-object": "src/amd/extensions/inheritance-object"
+        "inheritance-extension": "src/amd/inheritance-extension",
+        "inheritance-function": "src/amd/inheritance-function",
+        "inheritance-object": "src/amd/inheritance-object"
     },
     deps: tests,
     callback: window.__karma__.start

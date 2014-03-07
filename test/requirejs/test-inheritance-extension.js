@@ -1,6 +1,6 @@
-define(["inheritance-decorator"], function (PrototypeDecorator) {
+define(["inheritance-extension"], function (Extension) {
 
-    describe("PrototypeDecorator(options)", function () {
+    describe("Extension(options)", function () {
 
         var Target = function () {
         };
@@ -10,7 +10,7 @@ define(["inheritance-decorator"], function (PrototypeDecorator) {
         };
         var source = {};
         source[key] = value;
-        var extension = new PrototypeDecorator({
+        var extension = new Extension({
             target: Target,
             source: source
         });

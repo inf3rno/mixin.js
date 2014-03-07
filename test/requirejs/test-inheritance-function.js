@@ -1,8 +1,8 @@
-define(["inheritance-function"], function (functionDecorator) {
+define(["inheritance-function"], function (functionExtension) {
 
     describe("FunctionExtension", function () {
         it("Enables functions in Function.prototype", function () {
-            functionDecorator.enable();
+            functionExtension.enable();
             var Ancestor = function () {
             };
             var ancestor = new Ancestor();
@@ -18,7 +18,7 @@ define(["inheritance-function"], function (functionDecorator) {
             expect(Descendant.hasInstance(descendant)).toBeTruthy();
             expect(Descendant.hasInstance(ancestor)).toBeFalsy();
             expect(descendant.prop).toEqual(1);
-            functionDecorator.disable();
+            functionExtension.disable();
         });
     });
 

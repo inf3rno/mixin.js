@@ -39,7 +39,7 @@ You can use it the following way.
     var wrapper = myFactory.createWrapper();
 ```
 
-The `WeakMap` is partially contained by my **polyfill.js**, but it is part of the EC6 standard.
+The `WeakMap` is partially contained by my [polyfill.js](../polyfill/index.md#WeakMap), but it is part of the EC6 standard.
 
 ### <a name="Wrapper"></a>Wrapper
 

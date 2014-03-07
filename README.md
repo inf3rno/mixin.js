@@ -50,7 +50,7 @@ which uses the [`factory`](docs/inheritance/index.md#factory) in order to create
 The `Wrapper` instances can manipulate the `prototype` of `constructor` functions.
 
 **I recommend you to create your own extension using [`Wrapper`](docs/inheritance/Wrapper.md) instances returned by the [`wrap()`](docs/inheritance/wrap.md) function, so you can use inheritance in your own style.
-I have already created a [`Function.prototype` adapter](docs/extensions/inheritance-function/index.md) and an [`Object.prototype` adapter](docs/extensions/inheritance-object/index.md).**
+I have already created a [`Function.prototype` adapter](docs/inheritance-function/index.md) and an [`Object.prototype` adapter](docs/inheritance-object/index.md).**
 
 You can use the `Wrapper` instances the following way.
 
@@ -119,10 +119,9 @@ The following sections are available in the documentation.
  - [API Documentation](docs/index.md)
     - [polyfill.js](docs/polyfill/index.md)
     - [inheritance.js](docs/inheritance/index.md)
-    - [extensions](docs/extensions/index.md)
-        - [inheritance-decorator.js](docs/extensions/inheritance-decorator/index.md)
-        - [inheritance-function.js](docs/extensions/inheritance-function/index.md)
-        - [inheritance-object.js](docs/extensions/inheritance-object/index.md)
+    - [inheritance-extension.js](docs/inheritance-extension/index.md)
+    - [inheritance-function.js](docs/inheritance-function/index.md)
+    - [inheritance-object.js](docs/inheritance-object/index.md)
 
 ## Contribution
 
