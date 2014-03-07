@@ -9,7 +9,7 @@ This file contains the javascript core requirements of the library for the case 
 Defined by ES3. Checks whether a property was set on the instance or on the `prototype`. It is impossible to make perfect polyfill by constants.
 [Read more...](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty)
 
-It is required by the [`Extension`](../inheritance-extension/Extension.md) class by the extensions.
+It is required by the [inheritancejs-extension](https://github.com/inf3rno/inheritancejs-extension) module.
 
 #### Examples
 

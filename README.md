@@ -1,4 +1,4 @@
-# inheritance.js - 1.1.2
+# inheritance.js - 1.2.0
 
 This small lib contains prototypal inheritance and multiple inheritance support for javascript applications.
 
@@ -50,7 +50,8 @@ which uses the [`factory`](docs/inheritance/index.md#factory) in order to create
 The `Wrapper` instances can manipulate the `prototype` of `constructor` functions.
 
 **I recommend you to create your own extension using [`Wrapper`](docs/inheritance/Wrapper.md) instances returned by the [`wrap()`](docs/inheritance/wrap.md) function, so you can use inheritance in your own style.
-I have already created a [`Function.prototype` adapter](docs/inheritance-function/index.md) and an [`Object.prototype` adapter](docs/inheritance-object/index.md).**
+I have already created a [`Function.prototype` extension](https://github.com/inf3rno/inheritancejs-function) and an [`Object.prototype` adapter](https://github.com/inf3rno/inheritancejs-object).
+Both are derived from a base [`Extension`](https://github.com/inf3rno/inheritancejs-extension) class.**
 
 You can use the `Wrapper` instances the following way.
 
@@ -119,14 +120,31 @@ The following sections are available in the documentation.
  - [API Documentation](docs/index.md)
     - [polyfill.js](docs/polyfill/index.md)
     - [inheritance.js](docs/inheritance/index.md)
-    - [inheritance-extension.js](docs/inheritance-extension/index.md)
-    - [inheritance-function.js](docs/inheritance-function/index.md)
-    - [inheritance-object.js](docs/inheritance-object/index.md)
 
 ## Contribution
 
-If you have found a bug, or you have an enhancement idea, please don't hesitate, [write it to me](https://github.com/inf3rno/inheritancejs/issues).
+If you have found a bug, or you have an enhancement idea, please don't hesitate, [write it to me](https://github.com/inf3rno/inheritancejs/issues), or send a pull request.
 
 ## License
 
-Inheritance.js is licensed under the [WTFPL](http://www.wtfpl.net/) license... ;-)
+The MIT License (MIT)
+
+Copyright (c) 2014 Jánszky László Lajos
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
