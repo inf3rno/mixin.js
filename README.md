@@ -1,3 +1,7 @@
+# abandoned project
+
+I abandoned this project, because I could not do terms like superclass and interface in a cheap and consistent way. Maybe later I'll reopen this project with different aims. I have to think about it.
+
 # inheritance.js - 1.2.0
 
 This small lib contains prototypal inheritance and multiple inheritance support for javascript applications.
