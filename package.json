@@ -1,0 +1,29 @@
+{
+  "name": "inheritancejs",
+  "version": "0.9.0",
+  "description": "inheritancejs - Javascript Class Framework",
+  "keywords": [
+    "inheritance",
+    "javascript",
+    "class",
+    "ES5"
+  ],
+  "license": "MIT",
+  "author": "László Lajos Jánszky",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inf3rno/inheritancejs"
+  },
+  "bugs": {
+    "url": "https://github.com/inf3rno/inheritancejs/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "jasmine": ">=2.2.0"
+  }
+}

@@ -1,0 +1,6 @@
+.idea/
+node_modules/
+.gitignore
+.npmignore
+.travis.yml
+bower.json

@@ -1,154 +1,302 @@
-# abandoned project
+# inheritancejs - Javascript Class Framework
 
-I abandoned this project, because I could not do terms like superclass and interface in a cheap and consistent way. Maybe later I'll reopen this project with different aims. I have to think about it.
+[![Build Status](https://travis-ci.org/inf3rno/inheritancejs.png?branch=master)](https://travis-ci.org/inf3rno/inheritancejs)
 
-# inheritance.js - 1.2.0
+This small lib contains prototypal inheritance support for javascript applications.
 
-This small lib contains prototypal inheritance and multiple inheritance support for javascript applications.
-
-Ofc. I'd rather use ES6, but until [that become more widely supported](http://kangax.github.io/es5-compat-table/es6/), this library will be just enough for programming javascript object-oriented...
-
-## Requirements
-
-To use the core library you'll need `Object.create` and `WeakMap`.
-You can find the required part of these features in the [polyfill.js](docs/polyfill/index.md).
-
-**That file contains only what was necessary to create this library, so please don't use it for other purposes! It won't work.**
-
-## Installation
-
-**Currently only *AMD* modules are available (tested with *require.js* only), but that will change soon.**
-
-### Enhancements coming
-
-I intend to support the following
-
-platforms
-
- - browsers (Internet Explorer, Firefox, Chrome, Opera)
- - nodeJS
-
-package formats
-
- - standalone (for `srcipt src`)
- - commonJS
- - AMD
-
-component manager systems
-
- - npm
- - bower
- - component
- - jam
-
-## Unit tests
-
-I tested the library in a [*karma*](https://github.com/karma-runner) environment on [*Firefox*](http://www.mozilla.org/en-US/firefox/new/) with [*jasmine*](https://github.com/pivotal/jasmine).
-
-I developed the library using [TDD](http://en.wikipedia.org/wiki/Test-driven_development), so the [coverage](http://en.wikipedia.org/wiki/Code_coverage) should be about 100%, but I have not checked yet...
-
-## Example usage
-
-The core module exports a [`wrap()`](docs/inheritance/index.md#wrap) function,
-which uses the [`factory`](docs/inheritance/index.md#factory) in order to create [`Wrapper`](docs/inheritance/index.md#Wrapper) instances.
-The `Wrapper` instances can manipulate the `prototype` of `constructor` functions.
-
-**I recommend you to create your own extension using [`Wrapper`](docs/inheritance/Wrapper.md) instances returned by the [`wrap()`](docs/inheritance/wrap.md) function, so you can use inheritance in your own style.
-I have already created a [`Function.prototype` extension](https://github.com/inf3rno/inheritancejs-function) and an [`Object.prototype` extension](https://github.com/inf3rno/inheritancejs-object).
-Both are derived from a base [`Extension`](https://github.com/inf3rno/inheritancejs-extension) class.**
-
-You can use the `Wrapper` instances the following way.
-
-```js
-    var GrandFather = wrap({
-        age: 80,
-        initialize: function (){
-            this.canRepairCar = true;
-        }
-    }).toFunction();
-
-    var GrandMother = wrap(function (){
-        this.canMakeCookies = true;
-    }).mixin({
-        age: 75
-    }).toFunction();
-
-    var Mother = wrap(GrandMother).extend(GrandFather, {
-        age: 45,
-        initialize: function (){
-            GrandMother.call(this);
-            GrandFather.call(this);
-            this.canRideHorse = true;
-        }
-    }).toFunction();
-
-    var fatherProto = {
-        age: 50,
-        initialize: function (){
-            this.canPaintWall = true;
-        }
-    };
-
-    var Son = wrap(Mother).extend(
-        fatherProto,
-        {
-            age: 25,
-            initialize: function (){
-                Mother.call(this);
-                fatherProto.constructor.call(this);
-                this.canSkate = true;
-            }
-        }
-    ).toFunction();
-
-    var myGrany = new GrandMother();
-    console.log(myGrany); //{age: 75, canMakeCookies: true}
-
-    var me = new Son();
-    console.log(me); //{age: 25, canRepairCar: true, canMakeCookies: true, canRideHorse: true, canPaintWall: true}
-
-    console.assert(wrap(Son).hasInstance(me));
-    console.assert(wrap(GrandMother).hasInstance(me));
-
-    console.assert(wrap(Son).hasAncestor(GrandFather));
-    console.assert(wrap(Son).hasAncestor(fatherProto));
-
-    console.assert(wrap(GrandFather).hasDescendant(Mother));
-    console.assert(!wrap(GrandMother).hasDescendant(fatherProto));
-```
+Ofc. I'd rather use ES6, but until that becomes widely supported, this library will be just enough for programming object-oriented javascript...
+Other possible solution to use a compiled javascript relative like TypeScript, Babel or Traceur, which has ES6 class support.
 
 ## Documentation
 
-The following sections are available in the documentation.
+No real documentation yet.
 
- - [API Documentation](docs/index.md)
-    - [polyfill.js](docs/polyfill/index.md)
-    - [inheritance.js](docs/inheritance/index.md)
+*A detailed documentation will be available on GitHub Pages by version 1.0. Until then only a few examples are available in the current md file.*
 
-## Contribution
+### Installation
 
-If you have found a bug, or you have an enhancement idea, please don't hesitate, [write it to me](https://github.com/inf3rno/inheritancejs/issues), or send a pull request.
+Only node.js is supported yet.
+
+*I'll add browserify support and karma tests by 1.0*
+
+#### Package managers
+
+You can install the lib from npm and bower:
+
+```bash
+npm install inheritancejs
+```
+
+```bash
+bower install inheritancejs
+```
+
+#### Manual installation
+
+You should add the parent lib to NODE_PATH by manual installation (copy-paste).
+
+```bash
+export NODE_PATH=../
+# you should add the parent directory to NODE_PATH to support require("inheritancejs") by a local copy
+# another possible solutions are npm link and symlink
+```
+
+#### Requirements
+
+##### Environment requirements
+
+An ES5 capable environment is required at least with
+
+- `Object.create`
+- `Object.defineProperty`
+- `Object.getOwnPropertyDescriptor`
+- `Object.prototype.hasOwnProperty`
+- `Array.prototype.forEach`
+
+The environment tests are available under the `/spec/environment.spec.js` file.
+
+##### Module dependencies
+
+It requires `events.EventEmitter` for watching property changes.
+
+*By environments supporting `Object.observe`, the `events.EventEmitter` won't be needed.*
+
+### Examples
+
+#### 1. inheritance, instantiation, configuration, cloning, unique id, watch, unwatch
+```js
+var Cat = ih.Base.extend({
+    name: undefined,
+    configure: function () {
+        if (typeof(this.name) != "string")
+            throw new ih.InvalidConfiguration("Invalid cat name.");
+        ++Cat.counter;
+    },
+    meow: function () {
+        console.log(this.name + ": meow");
+    }
+}, {
+    counter: 0,
+    count: function () {
+        return this.counter;
+    }
+});
+```
+
+```js
+var kitty = new Cat({name: "Kitty"});
+var killer = new Cat({name: "Killer"});
+
+kitty.meow(); // Kitty: meow
+killer.meow(); // Killer: meow
+
+console.log(Cat.count()); // 2
+```
+
+```js
+kitty.merge(
+    configure: function (postfix) {
+        this.name += " " + postfix;
+    }
+);
+kitty.configure("Cat");
+kitty.meow(); // Kitty Cat: meow
+
+kitty.configure("from London");
+kitty.meow(); // Kitty Cat from London: meow
+```
+
+```js
+var kittyClone = clone(kitty);
+kittyClone.meow(); // Kitty Cat from London: meow
+```
+
+```js
+var id1 = ih.id();
+var id2 = ih.id();
+
+console.log(id1 != id2); // true
+```
+
+```js
+var o = {x:0};
+
+ih.watch(o, "x", console.log);
+o.x = 1; // 1 0 x {x:1}
+o.x = 2; // 2 1 x {x:2}
+
+ih.unwatch(o, "x", log);
+o.x = 3; // not logged
+o.x = 4; // not logged
+```
+
+#### 2. wrapper, custom errors, plugins, hashSet
+
+```js
+var o = {
+    m: function (a, b, c){
+        console.log("processing", a, b, c);
+        return [a, b, c];
+    }
+};
+o.m = new ih.Wrapper({
+    algorithm: Wrapper.algorithm.cascade,
+    preprocessors: [
+        function (a, b, c) {
+            console.log("reversing", a, b, c);
+            return [c, b, a];
+        }
+    ],
+    done: o.m
+}).toFunction();
+console.log("results", o.m(1, 2, 3))
+// reversing [1, 2, 3]
+// processing [3, 2, 1]
+// results [3, 2, 1]
+```
+
+```js
+var CustomError = ih.UserError.extend({
+    name: "CustomError"
+});
+var CustomErrorSubType = CustomError.extend({
+    message: "Something really bad happened."
+});
+var AnotherSubType = CustomError.extend();
+
+var err = new CustomErrorSubType();
+
+// all true
+console.log(
+    err instanceof CustomErrorSubType,
+    err instanceof CustomError,
+    err instanceof ih.UserError,
+    err instanceof Error
+);
+
+// all false
+console.log(
+    err instanceof AnotherSubType,
+    err instanceof SyntaxError
+);
+```
+
+```js
+  console.log(err.toString());
+  // CustomError Something really bad happened.
+
+  console.log(err.stack);
+  // prints the stack, something like:
+  /*
+      CustomError Something really bad happened.
+          at null.<anonymous> (/README.md:71:11)
+          ...
+  */
+
+```
+
+```js
+try {
+    throw err;
+} catch (err) {
+
+}
+```
+
+```js
+try {
+    try {
+        throw new ih.UserError("Something really bad happened.");
+    }
+    catch (cause) {
+        throw new ih.CompositeError({
+            message: "Something really bad caused this.",
+            myCause: cause
+        });
+    }
+catch (err) {
+    console.log(err.toString());
+    // CompositeError Something really bad caused this.
+
+    console.log(err.stack);
+    // prints the stack, something like:
+    /*
+        CompositeError Something really bad caused this.
+            at null.<anonymous> (/README.md:71:11)
+            ...
+        caused by <myCause> UserError Something really bad happened.
+            at null.<anonymous> (/README.md:68:9)
+            ...
+    */
+}
+```
+
+```js
+var plugin = new ih.Plugin({
+    test: function () {
+        throw new Error();
+    },
+    setup: function () {
+        console.log("Installing plugin.");
+    }
+});
+
+if (plugin.compatible())
+    plugin.install(); // won't install because of failing test
+
+console.log(plugin.installed); // false
+```
+
+```js
+var dependency = require("dependency");
+var plugin = new ih.Plugin({
+    // ...
+});
+plugin.dependency(dependency);
+plugin.install(); // installs dependency before setup
+```
+
+```js
+var o = new ih.Base(),
+    o2 = new ih.Base(),
+    o3 = new ih.Base();
+var hashSet = new ih.HashSet();
+
+hashSet.addAll(o, o2, o3);
+console.log(hashSet.containsAll(o, o2, o3)); // true
+
+hashSet.remove(o2);
+console.log(hashSet.containsAll(o, o2, o3)); // false
+console.log(hashSet.containsAll(o, o3)); // true
+console.log(hashSet.contains(o2)); // false
+
+for (var id in hashSet.items)
+    console.log(hashSet.items[id]); // o, o2, o3
+
+var items = hashSet.toArray();
+for (var index in items)
+    console.log(items[index]); // o, o2, o3
+```
+
+### Integration
+
+#### Testing
+
+I test with [Jasmine](https://github.com/jasmine/jasmine) 2.2.
+
+By node.js 0.10.36 I used [jasmine-npm](https://github.com/jasmine/jasmine-npm) 2.2.0.
+
+*By browsers I will use [karma](https://github.com/karma-runner/karma) x.x.x & [karma-jasmine](https://github.com/karma-runner/karma-jasmine) x.x.x.
+Browser tests will be available by 1.0
+
+#### Code completion
+
+No code completion support yet.
+
+*[WebStorm](https://www.jetbrains.com/webstorm/) support will be available by 1.1.
+Probably other IDEs and editors will be supported as well.*
+
 
 ## License
 
-The MIT License (MIT)
-
-Copyright (c) 2014 JÃ¡nszky LÃ¡szlÃ³ Lajos
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT - 2015 Jánszky László Lajos
