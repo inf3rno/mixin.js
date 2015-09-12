@@ -473,67 +473,6 @@ var StackFrame = Base.extend({
     })
 });
 
-var Plugin = Base.extend({
-    id: undefined,
-    installed: false,
-    error: undefined,
-    dependencies: undefined,
-    test: dummy,
-    setup: dummy,
-    configure: function () {
-        this.dependencies = {};
-    },
-    install: function () {
-        if (this.installed)
-            return;
-        if (!this.compatible())
-            throw new Plugin.Incompatible();
-        for (var id in this.dependencies) {
-            var dependency = this.dependencies[id];
-            dependency.install();
-        }
-        this.setup();
-        this.installed = true;
-    },
-    compatible: function () {
-        if (this.error !== undefined)
-            return !this.error;
-        for (var id in this.dependencies) {
-            var dependency = this.dependencies[id];
-            this.error = dependency.debug();
-            if (this.error !== undefined)
-                return !this.error;
-        }
-        try {
-            this.test();
-            this.error = false;
-        } catch (error) {
-            this.error = error;
-        }
-        return !this.error;
-    },
-    debug: function () {
-        this.compatible();
-        return this.error;
-    },
-    dependency: function () {
-        for (var index in arguments) {
-            var plugin = arguments[index];
-            if (!(plugin instanceof Plugin))
-                throw new Plugin.PluginRequired();
-            this.dependencies[plugin.id] = plugin;
-        }
-    }
-}, {
-    Incompatible: UserError.extend({
-        name: "Incompatible",
-        message: "The Plugin you wanted to install is incompatible with the current environment."
-    }),
-    PluginRequired: InvalidArguments.extend({
-        message: "Plugin required."
-    })
-});
-
 var Wrapper = Base.extend({
     preprocessors: [],
     done: function () {
@@ -768,87 +707,6 @@ var StackStringParser = Base.extend({
     })
 });
 
-var HashSet = Base.extend({
-    items: {},
-    observer: new EventEmitter(),
-    init: function () {
-        this.configure.apply(this, arguments);
-    },
-    build: function () {
-        this.observer = new EventEmitter();
-        this.observer.addListener("newListener", function (event, listener) {
-            if (event === "before:add" || event === "after:add")
-                for (var id in this.items)
-                    listener(this.items[id], this);
-        }.bind(this));
-        var inheritedItems = this.toArray();
-        this.items = {};
-        this.addAll.apply(this, inheritedItems);
-    },
-    configure: function (item) {
-        this.addAll.apply(this, arguments);
-    },
-    addAll: function (item) {
-        for (var index in arguments)
-            this.add(arguments[index]);
-        return this;
-    },
-    add: function (item) {
-        var id = this.hashCode(item);
-        if (this.items[id] === undefined) {
-            this.observer.emit("before:add", item, this);
-            this.items[id] = item;
-            this.observer.emit("after:add", item, this);
-        }
-        return this;
-    },
-    removeAll: function (item) {
-        for (var index in arguments)
-            this.remove(arguments[index]);
-        return this;
-    },
-    remove: function (item) {
-        var id = this.hashCode(item);
-        if (this.items[id] === item) {
-            this.observer.emit("before:remove", item, this);
-            delete(this.items[id]);
-            this.observer.emit("after:remove", item, this);
-        }
-        return this;
-    },
-    clear: function () {
-        for (var id in this.items)
-            this.remove(this.items[id]);
-        return this;
-    },
-    containsAll: function (item) {
-        var result = true;
-        for (var index in arguments)
-            if (!this.contains(arguments[index]))
-                result = false;
-        return result;
-    },
-    contains: function (item) {
-        var id = this.hashCode(item);
-        return this.items[id] === item;
-    },
-    toArray: function () {
-        var result = [];
-        for (var id in this.items)
-            result.push(this.items[id]);
-        return result;
-    },
-    hashCode: function (item) {
-        if (!(item instanceof Object) || item.id === undefined)
-            throw new HashSet.ItemRequired();
-        return item.id;
-    }
-}, {
-    ItemRequired: InvalidArguments.extend({
-        message: "Item with id is required."
-    })
-});
-
 module.exports = {
     native: native,
     dummy: dummy,
@@ -864,7 +722,6 @@ module.exports = {
     deep: deep,
     toArray: toArray,
     Base: Base,
-    HashSet: HashSet,
     UserError: UserError,
     CompositeError: CompositeError,
     InvalidConfiguration: InvalidConfiguration,
@@ -873,7 +730,6 @@ module.exports = {
     StackStringParser: StackStringParser,
     StackTrace: StackTrace,
     StackFrame: StackFrame,
-    Plugin: Plugin,
     Wrapper: Wrapper
 };
 

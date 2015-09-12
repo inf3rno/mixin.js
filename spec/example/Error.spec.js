@@ -2,7 +2,7 @@ var o3 = require("o3");
 
 describe("example", function () {
 
-    describe("2. wrapper, user errors, plugins, hashSet", function () {
+    describe("2. wrapper, user errors", function () {
 
         it("implements wrapper", function () {
 
@@ -94,48 +94,6 @@ describe("example", function () {
                 expect(err.stack).toContain("throwMyUserError");
             }
 
-        });
-
-
-        it("implements Plugin", function () {
-
-            var plugin = new o3.Plugin({
-                test: function () {
-                    throw new Error();
-                },
-                setup: function () {
-                    console.log("Installing plugin.");
-                }
-            });
-            if (plugin.compatible())
-                plugin.install(); // won't install because of failing test
-            expect(plugin.installed).toBe(false);
-        });
-
-        it("implements HashSet", function () {
-
-            var a = new o3.Base(),
-                b = {id: 123},
-                c = new o3.Base();
-            var hashSet = new o3.HashSet(a, b);
-            hashSet.addAll(b, c);
-            expect(hashSet.containsAll(a, b, c)).toBe(true);
-            hashSet.remove(b);
-            expect(hashSet.containsAll(a, b, c)).toBe(false);
-            var log = jasmine.createSpy();
-            for (var id in hashSet.items)
-                log(hashSet.items[id]);
-            expect(log).toHaveBeenCalledWith(a);
-            expect(log).not.toHaveBeenCalledWith(b);
-            expect(log).toHaveBeenCalledWith(c);
-            log.calls.reset();
-
-            var items = hashSet.toArray();
-            for (var index in items)
-                log(items[index]);
-            expect(log).toHaveBeenCalledWith(a);
-            expect(log).not.toHaveBeenCalledWith(b);
-            expect(log).toHaveBeenCalledWith(c);
         });
 
     });

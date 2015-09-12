@@ -58,7 +58,7 @@ It requires `events.EventEmitter` for watching property changes.
 
 ### Examples
 
-#### 1. inheritance, instantiation, configuration, cloning, unique id, watch, unwatch
+#### classes, inheritance, mixin (o3.Base, o3.extend, o3.clone, o3.merge)
 ```js
 var Cat = o3.Base.extend({
     name: undefined,
@@ -106,12 +106,16 @@ var kittyClone = clone(kitty);
 kittyClone.meow(); // Kitty Cat from London: meow
 ```
 
+#### unique id (o3.id)
+
 ```js
 var id1 = o3.id();
 var id2 = o3.id();
 
 console.log(id1 != id2); // true
 ```
+
+#### watch object property changes (o3.watch, o3.unwatch)
 
 ```js
 var o = {x:0};
@@ -120,12 +124,12 @@ o3.watch(o, "x", console.log);
 o.x = 1; // 1 0 x {x:1}
 o.x = 2; // 2 1 x {x:2}
 
-o3.unwatch(o, "x", log);
+o3.unwatch(o, "x", console.log);
 o.x = 3; // not logged
 o.x = 4; // not logged
 ```
 
-#### 2. wrapper, custom errors, plugins, hashSet
+#### function wrapper (o3.Wrapper, o3.Wrapper.algorithm)
 
 ```js
 var o = {
@@ -149,6 +153,9 @@ console.log("results", o.m(1, 2, 3))
 // processing [3, 2, 1]
 // results [3, 2, 1]
 ```
+
+
+#### custom errors (o3.UserError, o3.CompositeError)
 
 ```js
 var CustomError = o3.UserError.extend({
@@ -192,14 +199,6 @@ console.log(
 
 ```js
 try {
-    throw err;
-} catch (err) {
-
-}
-```
-
-```js
-try {
     try {
         throw new o3.UserError("Something really bad happened.");
     }
@@ -224,53 +223,6 @@ catch (err) {
             ...
     */
 }
-```
-
-```js
-var plugin = new o3.Plugin({
-    test: function () {
-        throw new Error();
-    },
-    setup: function () {
-        console.log("Installing plugin.");
-    }
-});
-
-if (plugin.compatible())
-    plugin.install(); // won't install because of failing test
-
-console.log(plugin.installed); // false
-```
-
-```js
-var dependency = require("dependency");
-var plugin = new o3.Plugin({
-    // ...
-});
-plugin.dependency(dependency);
-plugin.install(); // installs dependency before setup
-```
-
-```js
-var a = new o3.Base(),
-    b = new o3.Base(),
-    c = new o3.Base();
-var hashSet = new o3.HashSet();
-
-hashSet.addAll(a, b, c);
-console.log(hashSet.containsAll(a, b, c)); // true
-
-hashSet.remove(b);
-console.log(hashSet.containsAll(a, b, c)); // false
-console.log(hashSet.containsAll(a, c)); // true
-console.log(hashSet.contains(b)); // false
-
-for (var id in hashSet.items)
-    console.log(hashSet.items[id]); // a, b, c
-
-var items = hashSet.toArray();
-for (var index in items)
-    console.log(items[index]); // a, b, c
 ```
 
 ### Integration

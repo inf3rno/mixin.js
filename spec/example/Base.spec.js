@@ -2,7 +2,7 @@ var o3 = require("o3");
 
 describe("example", function () {
 
-    describe("1. inheritance, instantiation, configuration, cloning and unique id", function () {
+    describe("inheritance, instantiation, configuration, cloning and unique id", function () {
 
         it("implements inheritance, instantiation, configuration, cloning", function () {
 
