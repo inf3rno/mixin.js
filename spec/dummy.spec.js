@@ -1,5 +1,5 @@
-var ih = require("inheritancejs"),
-    dummy = ih.dummy;
+var o3 = require("o3"),
+    dummy = o3.dummy;
 
 describe("core", function () {
 

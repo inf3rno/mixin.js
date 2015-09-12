@@ -1,8 +1,8 @@
-var ih = require("inheritancejs"),
-    deep = ih.deep,
-    InvalidArguments = ih.InvalidArguments,
-    dummy = ih.dummy,
-    shallowClone = ih.shallowClone;
+var o3 = require("o3"),
+    deep = o3.deep,
+    InvalidArguments = o3.InvalidArguments,
+    dummy = o3.dummy,
+    shallowClone = o3.shallowClone;
 
 describe("core", function () {
 

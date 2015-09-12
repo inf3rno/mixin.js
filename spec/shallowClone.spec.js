@@ -1,6 +1,6 @@
-var ih = require("inheritancejs"),
-    shallowClone = ih.shallowClone,
-    dummy = ih.dummy;
+var o3 = require("o3"),
+    shallowClone = o3.shallowClone,
+    dummy = o3.dummy;
 
 describe("core", function () {
 

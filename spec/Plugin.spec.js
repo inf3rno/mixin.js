@@ -1,6 +1,6 @@
-var ih = require("inheritancejs"),
-    InvalidArguments = ih.InvalidArguments,
-    Plugin = ih.Plugin;
+var o3 = require("o3"),
+    InvalidArguments = o3.InvalidArguments,
+    Plugin = o3.Plugin;
 
 describe("core", function () {
 

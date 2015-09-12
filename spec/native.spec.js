@@ -1,5 +1,5 @@
-var ih = require("inheritancejs"),
-    native = ih.native;
+var o3 = require("o3"),
+    native = o3.native;
 
 describe("core", function () {
 

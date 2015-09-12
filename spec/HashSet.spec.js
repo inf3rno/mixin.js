@@ -1,8 +1,8 @@
-var ih = require("inheritancejs"),
-    HashSet = ih.HashSet,
-    Base = ih.Base,
-    InvalidArguments = ih.InvalidArguments,
-    toArray = ih.toArray;
+var o3 = require("o3"),
+    HashSet = o3.HashSet,
+    Base = o3.Base,
+    InvalidArguments = o3.InvalidArguments,
+    toArray = o3.toArray;
 
 describe("core", function () {
 

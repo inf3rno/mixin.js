@@ -1,6 +1,6 @@
-var ih = require("inheritancejs"),
-    extend = ih.extend,
-    InvalidArguments = ih.InvalidArguments;
+var o3 = require("o3"),
+    extend = o3.extend,
+    InvalidArguments = o3.InvalidArguments;
 
 describe("core", function () {
 

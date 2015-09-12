@@ -1,12 +1,14 @@
 {
-  "name": "inheritancejs",
+  "name": "o3",
   "version": "0.9.0",
-  "description": "inheritancejs - Javascript Class Framework",
+  "description": "o3 - Javascript Class Framework",
   "keywords": [
     "inheritance",
     "javascript",
     "class",
-    "ES5"
+    "ES5",
+    "object-oriented",
+    "class"
   ],
   "license": "MIT",
   "authors": [
@@ -16,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/inf3rno/inheritancejs"
+    "url": "https://github.com/inf3rno/o3"
   },
   "main": "index.js",
   "ignore": [

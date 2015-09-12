@@ -1,5 +1,5 @@
-var ih = require("inheritancejs"),
-    id = ih.id;
+var o3 = require("o3"),
+    id = o3.id;
 
 describe("core", function () {
 

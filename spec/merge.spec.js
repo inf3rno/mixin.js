@@ -1,5 +1,5 @@
-var ih = require("inheritancejs"),
-    merge = ih.merge;
+var o3 = require("o3"),
+    merge = o3.merge;
 
 describe("core", function () {
 

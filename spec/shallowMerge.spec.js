@@ -1,7 +1,7 @@
-var ih = require("inheritancejs"),
-    shallowMerge = ih.shallowMerge,
-    InvalidArguments = ih.InvalidArguments,
-    dummy = ih.dummy;
+var o3 = require("o3"),
+    shallowMerge = o3.shallowMerge,
+    InvalidArguments = o3.InvalidArguments,
+    dummy = o3.dummy;
 
 describe("core", function () {
 

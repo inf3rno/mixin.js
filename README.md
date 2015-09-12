@@ -1,6 +1,6 @@
-# inheritancejs - Javascript Class Framework
+# Ozone - Javascript Class Framework
 
-[![Build Status](https://travis-ci.org/inf3rno/inheritancejs.png?branch=master)](https://travis-ci.org/inf3rno/inheritancejs)
+[![Build Status](https://travis-ci.org/inf3rno/o3.png?branch=master)](https://travis-ci.org/inf3rno/o3)
 
 This small lib contains prototypal inheritance support for javascript applications.
 
@@ -24,22 +24,17 @@ Only node.js is supported yet.
 You can install the lib from npm and bower:
 
 ```bash
-npm install inheritancejs
+npm install o3
 ```
 
 ```bash
-bower install inheritancejs
+bower install o3
 ```
 
 #### Manual installation
 
-You should add the parent lib to NODE_PATH by manual installation (copy-paste).
-
-```bash
-export NODE_PATH=../
-# you should add the parent directory to NODE_PATH to support require("inheritancejs") by a local copy
-# another possible solutions are npm link and symlink
-```
+Just copy paste the directory to the `node_modules` or user browserify on the `index.js` if you want to use it in a browser.
+You can override the `module.exports`` part and put the whole code in a closure if you want to use it as an AMD style module or vanilla.js.
 
 #### Requirements
 
@@ -65,11 +60,11 @@ It requires `events.EventEmitter` for watching property changes.
 
 #### 1. inheritance, instantiation, configuration, cloning, unique id, watch, unwatch
 ```js
-var Cat = ih.Base.extend({
+var Cat = o3.Base.extend({
     name: undefined,
     configure: function () {
         if (typeof(this.name) != "string")
-            throw new ih.InvalidConfiguration("Invalid cat name.");
+            throw new o3.InvalidConfiguration("Invalid cat name.");
         ++Cat.counter;
     },
     meow: function () {
@@ -112,8 +107,8 @@ kittyClone.meow(); // Kitty Cat from London: meow
 ```
 
 ```js
-var id1 = ih.id();
-var id2 = ih.id();
+var id1 = o3.id();
+var id2 = o3.id();
 
 console.log(id1 != id2); // true
 ```
@@ -121,11 +116,11 @@ console.log(id1 != id2); // true
 ```js
 var o = {x:0};
 
-ih.watch(o, "x", console.log);
+o3.watch(o, "x", console.log);
 o.x = 1; // 1 0 x {x:1}
 o.x = 2; // 2 1 x {x:2}
 
-ih.unwatch(o, "x", log);
+o3.unwatch(o, "x", log);
 o.x = 3; // not logged
 o.x = 4; // not logged
 ```
@@ -139,7 +134,7 @@ var o = {
         return [a, b, c];
     }
 };
-o.m = new ih.Wrapper({
+o.m = new o3.Wrapper({
     algorithm: Wrapper.algorithm.cascade,
     preprocessors: [
         function (a, b, c) {
@@ -156,7 +151,7 @@ console.log("results", o.m(1, 2, 3))
 ```
 
 ```js
-var CustomError = ih.UserError.extend({
+var CustomError = o3.UserError.extend({
     name: "CustomError"
 });
 var CustomErrorSubType = CustomError.extend({
@@ -170,7 +165,7 @@ var err = new CustomErrorSubType();
 console.log(
     err instanceof CustomErrorSubType,
     err instanceof CustomError,
-    err instanceof ih.UserError,
+    err instanceof o3.UserError,
     err instanceof Error
 );
 
@@ -206,10 +201,10 @@ try {
 ```js
 try {
     try {
-        throw new ih.UserError("Something really bad happened.");
+        throw new o3.UserError("Something really bad happened.");
     }
     catch (cause) {
-        throw new ih.CompositeError({
+        throw new o3.CompositeError({
             message: "Something really bad caused this.",
             myCause: cause
         });
@@ -232,7 +227,7 @@ catch (err) {
 ```
 
 ```js
-var plugin = new ih.Plugin({
+var plugin = new o3.Plugin({
     test: function () {
         throw new Error();
     },
@@ -249,7 +244,7 @@ console.log(plugin.installed); // false
 
 ```js
 var dependency = require("dependency");
-var plugin = new ih.Plugin({
+var plugin = new o3.Plugin({
     // ...
 });
 plugin.dependency(dependency);
@@ -257,25 +252,25 @@ plugin.install(); // installs dependency before setup
 ```
 
 ```js
-var o = new ih.Base(),
-    o2 = new ih.Base(),
-    o3 = new ih.Base();
-var hashSet = new ih.HashSet();
+var a = new o3.Base(),
+    b = new o3.Base(),
+    c = new o3.Base();
+var hashSet = new o3.HashSet();
 
-hashSet.addAll(o, o2, o3);
-console.log(hashSet.containsAll(o, o2, o3)); // true
+hashSet.addAll(a, b, c);
+console.log(hashSet.containsAll(a, b, c)); // true
 
-hashSet.remove(o2);
-console.log(hashSet.containsAll(o, o2, o3)); // false
-console.log(hashSet.containsAll(o, o3)); // true
-console.log(hashSet.contains(o2)); // false
+hashSet.remove(b);
+console.log(hashSet.containsAll(a, b, c)); // false
+console.log(hashSet.containsAll(a, c)); // true
+console.log(hashSet.contains(b)); // false
 
 for (var id in hashSet.items)
-    console.log(hashSet.items[id]); // o, o2, o3
+    console.log(hashSet.items[id]); // a, b, c
 
 var items = hashSet.toArray();
 for (var index in items)
-    console.log(items[index]); // o, o2, o3
+    console.log(items[index]); // a, b, c
 ```
 
 ### Integration
@@ -287,7 +282,29 @@ I test with [Jasmine](https://github.com/jasmine/jasmine) 2.2.
 By node.js 0.10.36 I used [jasmine-npm](https://github.com/jasmine/jasmine-npm) 2.2.0.
 
 *By browsers I will use [karma](https://github.com/karma-runner/karma) x.x.x & [karma-jasmine](https://github.com/karma-runner/karma-jasmine) x.x.x.
-Browser tests will be available by 1.0
+Browser tests will be available by 1.0.*
+
+You must be able to `require("o3")` if you want to run the tests.
+If you install the framework with `npm install` then this is not an issue.
+
+If you have installed it manually, than you have the following options.
+
+1. You can set the environment variable `NODE_PATH` to `../` if you use WebStorm,
+or you can do it from the terminal before running the tests.
+
+    ```bash
+    cd o3
+    export NODE_PATH=../
+    npm run test
+    ```
+
+    Adding the parent folder to the environment variable is like putting the directory into the `node_modules`.
+    The directory name must be `o3`, because it is loaded based on that (the name in the `package.json` does not matter in this case).
+
+2. You can use `npm link`.
+3. You can use `symlink`.
+
+I never tried out the latter ones, but according to many articles they work.
 
 #### Code completion
 

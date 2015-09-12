@@ -1,4 +1,4 @@
-var ih = require("inheritancejs");
+var o3 = require("o3");
 
 describe("example", function () {
 
@@ -11,10 +11,10 @@ describe("example", function () {
                 m: m
             };
             var p = jasmine.createSpy().and.callFake(function () {
-                return ih.toArray(arguments);
+                return o3.toArray(arguments);
             });
-            o.m = new ih.Wrapper({
-                algorithm: ih.Wrapper.algorithm.cascade,
+            o.m = new o3.Wrapper({
+                algorithm: o3.Wrapper.algorithm.cascade,
                 preprocessors: [p],
                 done: o.m
             }).toFunction();
@@ -25,7 +25,7 @@ describe("example", function () {
 
         it("implements UserError", function () {
 
-            var MyError = ih.UserError.extend({
+            var MyError = o3.UserError.extend({
                     name: "MyError"
                 }),
                 MyErrorDescendant = MyError.extend({
@@ -43,7 +43,7 @@ describe("example", function () {
             } catch (err) {
                 expect(err instanceof MyErrorDescendant).toBe(true);
                 expect(err instanceof MyError).toBe(true);
-                expect(err instanceof ih.UserError).toBe(true);
+                expect(err instanceof o3.UserError).toBe(true);
                 expect(err instanceof Error).toBe(true);
 
                 expect(err instanceof AnotherDescendant).toBe(false);
@@ -59,12 +59,12 @@ describe("example", function () {
 
         it("implements CompositeError", function () {
 
-            var MyCompositeError = ih.CompositeError.extend({
+            var MyCompositeError = o3.CompositeError.extend({
                     name: "MyError",
                     message: "Something really bad caused this."
                 }),
                 throwMyUserError = function () {
-                    throw new ih.UserError("Something really bad happened.");
+                    throw new o3.UserError("Something really bad happened.");
                 },
                 throwMyCompositeError = function () {
                     try {
@@ -83,9 +83,9 @@ describe("example", function () {
                 throwMyCompositeError();
             } catch (err) {
                 expect(err instanceof MyCompositeError).toBe(true);
-                expect(err instanceof ih.CompositeError).toBe(true);
-                expect(err instanceof ih.UserError).toBe(true);
-                expect(err.myCause instanceof ih.UserError).toBe(true);
+                expect(err instanceof o3.CompositeError).toBe(true);
+                expect(err instanceof o3.UserError).toBe(true);
+                expect(err.myCause instanceof o3.UserError).toBe(true);
                 expect(err.stack).toBeDefined();
                 expect(err.stack).toContain(err.name);
                 expect(err.stack).toContain(err.message);
@@ -99,7 +99,7 @@ describe("example", function () {
 
         it("implements Plugin", function () {
 
-            var plugin = new ih.Plugin({
+            var plugin = new o3.Plugin({
                 test: function () {
                     throw new Error();
                 },
@@ -114,28 +114,28 @@ describe("example", function () {
 
         it("implements HashSet", function () {
 
-            var o = new ih.Base(),
-                o2 = {id: 123},
-                o3 = new ih.Base();
-            var hashSet = new ih.HashSet(o, o2);
-            hashSet.addAll(o2, o3);
-            expect(hashSet.containsAll(o, o2, o3)).toBe(true);
-            hashSet.remove(o2);
-            expect(hashSet.containsAll(o, o2, o3)).toBe(false);
+            var a = new o3.Base(),
+                b = {id: 123},
+                c = new o3.Base();
+            var hashSet = new o3.HashSet(a, b);
+            hashSet.addAll(b, c);
+            expect(hashSet.containsAll(a, b, c)).toBe(true);
+            hashSet.remove(b);
+            expect(hashSet.containsAll(a, b, c)).toBe(false);
             var log = jasmine.createSpy();
             for (var id in hashSet.items)
                 log(hashSet.items[id]);
-            expect(log).toHaveBeenCalledWith(o);
-            expect(log).not.toHaveBeenCalledWith(o2);
-            expect(log).toHaveBeenCalledWith(o3);
+            expect(log).toHaveBeenCalledWith(a);
+            expect(log).not.toHaveBeenCalledWith(b);
+            expect(log).toHaveBeenCalledWith(c);
             log.calls.reset();
 
             var items = hashSet.toArray();
             for (var index in items)
                 log(items[index]);
-            expect(log).toHaveBeenCalledWith(o);
-            expect(log).not.toHaveBeenCalledWith(o2);
-            expect(log).toHaveBeenCalledWith(o3);
+            expect(log).toHaveBeenCalledWith(a);
+            expect(log).not.toHaveBeenCalledWith(b);
+            expect(log).toHaveBeenCalledWith(c);
         });
 
     });

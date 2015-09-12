@@ -1,5 +1,5 @@
-var ih = require("inheritancejs"),
-    echo = ih.echo;
+var o3 = require("o3"),
+    echo = o3.echo;
 
 describe("core", function () {
 

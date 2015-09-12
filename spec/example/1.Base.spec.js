@@ -1,4 +1,4 @@
-var ih = require("inheritancejs");
+var o3 = require("o3");
 
 describe("example", function () {
 
@@ -7,7 +7,7 @@ describe("example", function () {
         it("implements inheritance, instantiation, configuration, cloning", function () {
 
             var log = jasmine.createSpy(),
-                Cat = ih.Base.extend({
+                Cat = o3.Base.extend({
                     name: undefined,
                     configure: function () {
                         ++Cat.counter;
@@ -43,26 +43,24 @@ describe("example", function () {
             kitty.meow();
             expect(log).toHaveBeenCalledWith("Kitty Cat from London: meow");
 
-            var kittyClone = ih.clone(kitty);
+            var kittyClone = o3.clone(kitty);
             kittyClone.meow();
             expect(log).toHaveBeenCalledWith("Kitty Cat from London: meow");
         });
 
 
-
-
         it("implements unique id", function () {
 
-            var id1 = ih.id(),
-                id2 = ih.id();
+            var id1 = o3.id(),
+                id2 = o3.id();
             expect(id1).not.toBe(id2);
         });
 
-        it("implements watch, unwatch", function (){
+        it("implements watch, unwatch", function () {
 
             var o = {};
             var log = jasmine.createSpy();
-            ih.watch(o, "x", log);
+            o3.watch(o, "x", log);
 
             expect(log).not.toHaveBeenCalled();
 
@@ -74,7 +72,7 @@ describe("example", function () {
             log.calls.reset();
             expect(log).not.toHaveBeenCalled();
 
-            ih.unwatch(o, "x", log);
+            o3.unwatch(o, "x", log);
             o.x = 3;
             expect(log).not.toHaveBeenCalled();
         });

@@ -1,5 +1,5 @@
-var ih = require("inheritancejs"),
-    clone = ih.clone;
+var o3 = require("o3"),
+    clone = o3.clone;
 
 describe("core", function () {
 

@@ -1,7 +1,7 @@
-var ih = require("inheritancejs"),
-    CompositeError = ih.CompositeError,
-    UserError = ih.UserError,
-    StackTrace = ih.StackTrace;
+var o3 = require("o3"),
+    CompositeError = o3.CompositeError,
+    UserError = o3.UserError,
+    StackTrace = o3.StackTrace;
 
 describe("core", function () {
 
