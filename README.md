@@ -7,55 +7,6 @@ This small lib contains prototypal inheritance support for javascript applicatio
 Ofc. I'd rather use ES6, but until that becomes widely supported, this library will be just enough for programming object-oriented javascript...
 Other possible solution to use a compiled javascript relative like TypeScript, Babel or Traceur, which has ES6 class support.
 
-## Documentation
-
-No real documentation yet.
-
-*A detailed documentation will be available on GitHub Pages by version 1.0. Until then only a few examples are available in the current md file.*
-
-### Installation
-
-Only node.js is supported yet.
-
-*I'll add browserify support and karma tests by 1.0*
-
-#### Package managers
-
-You can install the lib from npm and bower:
-
-```bash
-npm install o3
-```
-
-```bash
-bower install o3
-```
-
-#### Manual installation
-
-Just copy paste the directory to the `node_modules` or user browserify on the `index.js` if you want to use it in a browser.
-You can override the `module.exports`` part and put the whole code in a closure if you want to use it as an AMD style module or vanilla.js.
-
-#### Requirements
-
-##### Environment requirements
-
-An ES5 capable environment is required at least with
-
-- `Object.create`
-- `Object.defineProperty`
-- `Object.getOwnPropertyDescriptor`
-- `Object.prototype.hasOwnProperty`
-- `Array.prototype.forEach`
-
-The environment tests are available under the `/spec/environment.spec.js` file.
-
-##### Module dependencies
-
-It requires `events.EventEmitter` for watching property changes.
-
-*By environments supporting `Object.observe`, the `events.EventEmitter` won't be needed.*
-
 ### Examples
 
 #### classes, inheritance, mixin (o3.Base, o3.extend, o3.clone, o3.merge)
@@ -224,6 +175,53 @@ catch (err) {
     */
 }
 ```
+
+## Documentation
+
+No documentation available yet.
+
+*A detailed documentation will be available on GitHub Pages by version 1.0.*
+
+### Installation
+
+Only node.js is supported yet.
+
+*I'll add browserify support and karma tests by 1.0*
+
+#### Package managers
+
+You can install the lib from npm and bower:
+
+```bash
+npm install o3
+```
+
+```bash
+bower install o3
+```
+
+#### Manual installation
+
+Just copy paste the directory to the `node_modules` or user browserify on the `index.js` if you want to use it in a browser.
+You can override the `module.exports`` part and put the whole code in a closure if you want to use it as an AMD style module or vanilla.js.
+
+#### Requirements
+
+##### Environment requirements
+
+An ES5 capable environment is required at least with
+
+- `Object.create`
+- `Object.defineProperty`
+- `Object.getOwnPropertyDescriptor`
+- `Object.prototype.hasOwnProperty`
+
+The environment tests are available under the `/spec/environment.spec.js` file.
+
+##### Module dependencies
+
+It requires `events.EventEmitter` for watching property changes.
+If you have an environment, which supports `Object.observe`, you won't need this framework.
 
 ### Integration
 
