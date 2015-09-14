@@ -9,9 +9,9 @@ Other possible solution to use a compiled javascript relative like TypeScript, B
 
 ### Examples
 
-#### classes, inheritance, mixin (o3.Base, o3.extend, o3.clone, o3.merge)
+#### classes, inheritance, mixin (o3.Class, o3.extend, o3.clone, o3.merge)
 ```js
-var Cat = o3.Base.extend({
+var Cat = o3.Class.extend({
     name: undefined,
     configure: function () {
         if (typeof(this.name) != "string")

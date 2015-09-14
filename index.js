@@ -301,7 +301,7 @@ var mixin = function (subject, properties, staticProperties) {
     return subject;
 };
 
-var Base = mixin(shallowClone(Object), {
+var Class = mixin(shallowClone(Object), {
     init: function () {
         this.merge.apply(this, arguments);
         this.configure();
@@ -346,8 +346,8 @@ var UserError = mixin(shallowClone(Error), {
         });
         this.configure();
     },
-    clone: Base.prototype.clone,
-    merge: Base.prototype.merge,
+    clone: Class.prototype.clone,
+    merge: Class.prototype.merge,
     configure: dummy,
     toStackString: function () {
         var string = "";
@@ -363,10 +363,10 @@ var UserError = mixin(shallowClone(Error), {
         return parser.parse(nativeError.stack);
     },
     parser: undefined,
-    extend: Base.extend,
-    mixin: Base.mixin,
-    clone: Base.clone,
-    merge: Base.merge
+    extend: Class.extend,
+    mixin: Class.mixin,
+    clone: Class.clone,
+    merge: Class.merge
 });
 
 var InvalidConfiguration = UserError.extend({
@@ -417,7 +417,7 @@ var CompositeError = UserError.extend({
     }
 });
 
-var StackTrace = Base.extend({
+var StackTrace = Class.extend({
     frames: [],
     string: undefined,
     build: function () {
@@ -460,7 +460,7 @@ var StackTrace = Base.extend({
     })
 });
 
-var StackFrame = Base.extend({
+var StackFrame = Class.extend({
     description: undefined,
     path: undefined,
     row: undefined,
@@ -500,7 +500,7 @@ var StackFrame = Base.extend({
     })
 });
 
-var Wrapper = Base.extend({
+var Wrapper = Class.extend({
     preprocessors: [],
     done: function () {
         return toArray(arguments);
@@ -659,7 +659,7 @@ UserError.prototype.merge = new Wrapper({
     done: UserError.prototype.merge
 }).toFunction();
 
-var StackStringParser = Base.extend({
+var StackStringParser = Class.extend({
     messageFinder: /^[^\n]*\n/,
     inheritanceRelatedFramesFinder: /^[\s\S]*?\s+new\s+[^\n]+\n/,
     parse: function (string) {
@@ -749,7 +749,7 @@ module.exports = {
     deep: deep,
     toArray: toArray,
     newConstructor: newConstructor,
-    Base: Base,
+    Class: Class,
     UserError: UserError,
     CompositeError: CompositeError,
     InvalidConfiguration: InvalidConfiguration,

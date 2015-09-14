@@ -7,7 +7,7 @@ describe("example", function () {
         it("implements inheritance, instantiation, configuration, cloning", function () {
 
             var log = jasmine.createSpy(),
-                Cat = o3.Base.extend({
+                Cat = o3.Class.extend({
                     name: undefined,
                     configure: function () {
                         ++Cat.counter;

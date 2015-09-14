@@ -1,22 +1,22 @@
 var o3 = require("o3"),
-    Base = o3.Base,
+    Class = o3.Class,
     InvalidArguments = o3.InvalidArguments,
     toArray = o3.toArray;
 
-describe("Base", function () {
+describe("Class", function () {
 
     it("is an Object descendant", function () {
 
-        expect(Base.prototype instanceof Object).toBe(true);
+        expect(Class.prototype instanceof Object).toBe(true);
     });
 
     describe("extend", function () {
 
         it("calls the extend function on the class", function () {
 
-            var My = Base.extend({a: 1}, {b: 2});
+            var My = Class.extend({a: 1}, {b: 2});
             var my = new My();
-            expect(My.prototype instanceof Base);
+            expect(My.prototype instanceof Class);
             expect(My.prototype.a).toBe(1);
             expect(My.b).toBe(2);
             expect(my.id).toBeDefined();
@@ -28,7 +28,7 @@ describe("Base", function () {
 
         it("calls the merge function on the class", function () {
 
-            var My = Base.extend();
+            var My = Class.extend();
             My.merge({a: 1});
             expect(My.a).toBe(1);
         });
@@ -41,7 +41,7 @@ describe("Base", function () {
 
             it("calls Object.create() on the instance", function () {
 
-                var a = new Base({
+                var a = new Class({
                     x: {},
                     y: 1
                 });
@@ -56,7 +56,7 @@ describe("Base", function () {
 
             it("calls build on the cloned instance", function () {
 
-                var a = new Base({
+                var a = new Class({
                     build: jasmine.createSpy()
                 });
                 var b = a.clone();
@@ -71,7 +71,7 @@ describe("Base", function () {
             it("calls merge, configure in this order", function () {
 
                 var log = jasmine.createSpy();
-                var Descendant = Base.extend({
+                var Descendant = Class.extend({
                     build: function () {
                         expect(this.id).toBeDefined();
                         log("build", this, toArray(arguments));
@@ -96,12 +96,12 @@ describe("Base", function () {
 
             it("calls the shallowMerge function on the instance", function () {
 
-                var err = new Base();
+                var err = new Class();
                 err.merge({
                     a: 1
                 });
                 expect(err.a).toBe(1);
-                expect(Base.prototype.a).toBeUndefined();
+                expect(Class.prototype.a).toBeUndefined();
             });
 
         });
