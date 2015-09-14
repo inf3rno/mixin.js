@@ -99,28 +99,6 @@ var unwatch = function (subject, property, listener) {
         subject[watchObserver].removeListener(property, listener);
 };
 
-var extend = function (Ancestor, properties, staticProperties) {
-    if (!(Ancestor instanceof Function))
-        throw new InvalidArguments();
-    if (arguments.length > 3)
-        throw new InvalidArguments();
-    var Descendant = function () {
-        id.define(this);
-        if (this.build instanceof Function)
-            this.build();
-        if (this.init instanceof Function)
-            this.init.apply(this, arguments);
-    };
-    Descendant.prototype = clone(Ancestor.prototype);
-    if (properties)
-        merge(Descendant.prototype, properties);
-    Descendant.prototype.constructor = Descendant;
-    merge(Descendant, Ancestor);
-    if (staticProperties)
-        merge(Descendant, staticProperties);
-    return Descendant;
-};
-
 var clone = function (subject) {
     if (typeof (subject) == "object" && subject && (subject.clone instanceof Function))
         return subject.clone();
@@ -128,6 +106,13 @@ var clone = function (subject) {
 };
 
 var shallowClone = function (subject) {
+    if (typeof (subject) == "function") {
+        var result = newConstructor();
+        result.prototype = clone(subject.prototype);
+        result.prototype.constructor = result;
+        merge(result, subject);
+        return result;
+    }
     if (typeof (subject) != "object" || subject === null)
         return subject;
     if (subject instanceof Array)
@@ -284,13 +269,45 @@ var toArray = function (subject) {
     return result;
 };
 
-var Base = extend(Object, {
+
+var lastConstructor;
+var newConstructor = function () {
+    lastConstructor = function () {
+        id.define(this);
+        if (this.build instanceof Function)
+            this.build();
+        if (this.init instanceof Function)
+            this.init.apply(this, arguments);
+    };
+    return lastConstructor;
+};
+Object.defineProperty(newConstructor, "last", {
+    configurable: false,
+    enumerable: true,
+    get: function () {
+        return lastConstructor;
+    }
+});
+
+var mixin = function (subject, properties, staticProperties) {
+    if (arguments.length > 3)
+        throw new InvalidArguments();
+    if (!(subject instanceof Function))
+        throw new InvalidArguments();
+    if (properties)
+        merge(subject.prototype, properties);
+    if (staticProperties)
+        merge(subject, staticProperties);
+    return subject;
+};
+
+var Base = mixin(shallowClone(Object), {
     init: function () {
         this.merge.apply(this, arguments);
         this.configure();
     },
     clone: function () {
-        var instance = Object.create(this);
+        var instance = shallowClone(this);
         id.define(instance);
         if (instance.build instanceof Function)
             instance.build();
@@ -302,12 +319,20 @@ var Base = extend(Object, {
     configure: dummy
 }, {
     extend: function (properties, staticProperties) {
-        return extend(this, properties, staticProperties);
+        return this.clone().mixin(properties, staticProperties);
+    },
+    mixin: function (properties, staticProperties) {
+        return mixin(this, properties, staticProperties);
+    },
+    clone: function () {
+        return shallowClone(this);
+    },
+    merge: function (source) {
+        return shallowMerge(this, toArray(arguments));
     }
 });
-Base.merge = Base.prototype.merge;
 
-var UserError = extend(Error, {
+var UserError = mixin(shallowClone(Error), {
     name: "UserError",
     message: "",
     stackTrace: undefined,
@@ -339,6 +364,8 @@ var UserError = extend(Error, {
     },
     parser: undefined,
     extend: Base.extend,
+    mixin: Base.mixin,
+    clone: Base.clone,
     merge: Base.merge
 });
 
@@ -714,13 +741,14 @@ module.exports = {
     id: id,
     watch: watch,
     unwatch: unwatch,
-    extend: extend,
+    mixin: mixin,
     clone: clone,
     shallowClone: shallowClone,
     merge: merge,
     shallowMerge: shallowMerge,
     deep: deep,
     toArray: toArray,
+    newConstructor: newConstructor,
     Base: Base,
     UserError: UserError,
     CompositeError: CompositeError,

@@ -3,9 +3,7 @@ var o3 = require("o3"),
     InvalidArguments = o3.InvalidArguments,
     toArray = o3.toArray;
 
-
 describe("Base", function () {
-
 
     it("is an Object descendant", function () {
 
@@ -90,18 +88,6 @@ describe("Base", function () {
                 expect(log.calls.argsFor(1)).toEqual(["merge", descendant, [{a: 1}, {b: 2}]]);
                 expect(log.calls.argsFor(2)).toEqual(["configure", descendant, []]);
                 expect(log.calls.count()).toBe(3);
-            });
-
-        });
-
-        describe("constructor", function () {
-
-            it("sets an unique, non-enumerable, non-configurable id on the instance", function () {
-
-                var o = {};
-                Base.call(o);
-                expect(o.id).toBeDefined();
-                expect(o.id).not.toBe(new Base().id);
             });
 
         });

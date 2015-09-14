@@ -1,20 +1,20 @@
 var o3 = require("o3"),
     shallowClone = o3.shallowClone,
+    newConstructor = o3.newConstructor,
     dummy = o3.dummy;
 
 describe("core", function () {
 
     describe("shallowClone", function () {
 
-        it("returns the same primitives and Function", function () {
+        it("returns the same primitives", function () {
             [
                 undefined,
                 null,
                 "string",
                 123,
                 true,
-                false,
-                dummy
+                false
             ].forEach(function (value) {
                     expect(shallowClone(value)).toBe(value);
                 });
@@ -57,6 +57,18 @@ describe("core", function () {
             expect(b.y).toBe(a.y);
             b.y = 3;
             expect(b.y).not.toBe(a.y);
+        });
+
+        it("returns a new Constructor with a descendant prototype and merged properties by passing a Function", function () {
+            var Ancestor = function () {
+            };
+            Ancestor.x = {};
+            var Descendant = shallowClone(Ancestor);
+            expect(Descendant instanceof Function).toBe(true);
+            expect(Descendant).toBe(newConstructor.last);
+            expect(Ancestor).not.toBe(Descendant);
+            expect(Descendant.prototype instanceof Ancestor);
+            expect(Descendant.x).toBe(Ancestor.x);
         });
 
     });
