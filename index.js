@@ -106,13 +106,6 @@ var clone = function (subject) {
 };
 
 var shallowClone = function (subject) {
-    if (typeof (subject) == "function") {
-        var result = newConstructor();
-        result.prototype = clone(subject.prototype);
-        result.prototype.constructor = result;
-        merge(result, subject);
-        return result;
-    }
     if (typeof (subject) != "object" || subject === null)
         return subject;
     if (subject instanceof Array)
@@ -270,38 +263,74 @@ var toArray = function (subject) {
 };
 
 
-var lastConstructor;
-var newConstructor = function () {
-    lastConstructor = function () {
-        id.define(this);
-        if (this.build instanceof Function)
-            this.build();
-        if (this.init instanceof Function)
-            this.init.apply(this, arguments);
-    };
-    return lastConstructor;
+var ClassBuilder = function () {
 };
-Object.defineProperty(newConstructor, "last", {
-    configurable: false,
-    enumerable: true,
-    get: function () {
-        return lastConstructor;
+ClassBuilder.prototype =
+{
+    constructor: ClassBuilder,
+    subject: undefined,
+    setConstructor: function (subject) {
+        if (!(subject instanceof Function))
+            throw new InvalidArguments();
+        if (this.subject)
+            throw new InvalidStateTransition();
+        this.subject = subject;
+        return this;
+    },
+    inherit: function (Ancestor) {
+        if (!(Ancestor instanceof Function))
+            throw new InvalidArguments();
+        this.mergeStatic(Ancestor);
+        this.setPrototype(clone(Ancestor.prototype));
+        return this;
+    },
+    setPrototype: function (prototype) {
+        if (typeof (prototype) != "object" || prototype === null)
+            throw new InvalidArguments();
+        this.subject.prototype = prototype;
+        this.subject.prototype.constructor = this.subject;
+        return this;
+    },
+    mergeStatic: function (staticProperties) {
+        if (staticProperties)
+            merge(this.subject, staticProperties);
+        return this;
+    },
+    mergePrototype: function (properties) {
+        if (properties)
+            merge(this.subject.prototype, properties);
+        return this;
+    },
+    release: function () {
+        var subject = this.subject;
+        delete (this.subject);
+        return subject;
     }
-});
-
-var mixin = function (subject, properties, staticProperties) {
-    if (arguments.length > 3)
-        throw new InvalidArguments();
-    if (!(subject instanceof Function))
-        throw new InvalidArguments();
-    if (properties)
-        merge(subject.prototype, properties);
-    if (staticProperties)
-        merge(subject, staticProperties);
-    return subject;
 };
+var classBuilder = new ClassBuilder();
 
-var Class = mixin(shallowClone(Object), {
+var Class = classBuilder.setConstructor(function () {
+    throw new InstantiatingAbstractClass();
+}).inherit(Object).mergeStatic({
+    extend: function (properties, staticProperties) {
+        return this.clone().mixin(properties, staticProperties);
+    },
+    clone: function () {
+        return classBuilder.setConstructor(function () {
+            id.define(this);
+            if (this.build instanceof Function)
+                this.build();
+            if (this.init instanceof Function)
+                this.init.apply(this, arguments);
+        }).inherit(this).release();
+    },
+    mixin: function (properties, staticProperties) {
+        return classBuilder.setConstructor(this).mergePrototype(properties).mergeStatic(staticProperties).release();
+    },
+    merge: function (source) {
+        return shallowMerge(this, toArray(arguments));
+    }
+}).mergePrototype({
     init: function () {
         this.merge.apply(this, arguments);
         this.configure();
@@ -317,22 +346,31 @@ var Class = mixin(shallowClone(Object), {
         return shallowMerge(this, toArray(arguments));
     },
     configure: dummy
-}, {
-    extend: function (properties, staticProperties) {
-        return this.clone().mixin(properties, staticProperties);
-    },
-    mixin: function (properties, staticProperties) {
-        return mixin(this, properties, staticProperties);
-    },
-    clone: function () {
-        return shallowClone(this);
-    },
-    merge: function (source) {
-        return shallowMerge(this, toArray(arguments));
-    }
-});
+}).release();
 
-var UserError = mixin(shallowClone(Error), {
+var UserError = classBuilder.setConstructor(function () {
+    id.define(this);
+    if (this.build instanceof Function)
+        this.build();
+    if (this.init instanceof Function)
+        this.init.apply(this, arguments);
+}).inherit(Error).mergeStatic(Class).mergePrototype(Class.prototype).mergeStatic({
+    clone: function () {
+        return classBuilder.setConstructor(function () {
+            id.define(this);
+            if (this.build instanceof Function)
+                this.build();
+            if (this.init instanceof Function)
+                this.init.apply(this, arguments);
+        }).inherit(this).release();
+    },
+    getCurrentStackTrace: function () {
+        var nativeError = new Error();
+        var parser = new StackStringParser();
+        return parser.parse(nativeError.stack);
+    },
+    parser: undefined
+}).mergePrototype({
     name: "UserError",
     message: "",
     stackTrace: undefined,
@@ -346,9 +384,6 @@ var UserError = mixin(shallowClone(Error), {
         });
         this.configure();
     },
-    clone: Class.prototype.clone,
-    merge: Class.prototype.merge,
-    configure: dummy,
     toStackString: function () {
         var string = "";
         string += this.name;
@@ -356,17 +391,16 @@ var UserError = mixin(shallowClone(Error), {
         string += this.stackTrace;
         return string;
     }
-}, {
-    getCurrentStackTrace: function () {
-        var nativeError = new Error();
-        var parser = new StackStringParser();
-        return parser.parse(nativeError.stack);
-    },
-    parser: undefined,
-    extend: Class.extend,
-    mixin: Class.mixin,
-    clone: Class.clone,
-    merge: Class.merge
+}).release();
+
+var InvalidStateTransition = UserError.extend({
+    name: "InvalidStateTransition",
+    message: "Invalid State Transition"
+});
+
+var InstantiatingAbstractClass = UserError.extend({
+    name: "InstantiatingAbstractClass",
+    message: "Instantiating Abstract Class"
 });
 
 var InvalidConfiguration = UserError.extend({
@@ -741,17 +775,18 @@ module.exports = {
     id: id,
     watch: watch,
     unwatch: unwatch,
-    mixin: mixin,
     clone: clone,
     shallowClone: shallowClone,
     merge: merge,
     shallowMerge: shallowMerge,
     deep: deep,
     toArray: toArray,
-    newConstructor: newConstructor,
+    ClassBuilder: ClassBuilder,
     Class: Class,
     UserError: UserError,
     CompositeError: CompositeError,
+    InvalidStateTransition: InvalidStateTransition,
+    InstantiatingAbstractClass: InstantiatingAbstractClass,
     InvalidConfiguration: InvalidConfiguration,
     InvalidArguments: InvalidArguments,
     InvalidResult: InvalidResult,
