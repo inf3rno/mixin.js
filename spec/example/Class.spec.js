@@ -2,16 +2,20 @@ var o3 = require("o3");
 
 describe("example", function () {
 
-    describe("inheritance, instantiation, configuration, cloning", function () {
+    describe("inheritance, instantiation, cloning", function () {
 
-        it("implements inheritance, instantiation, configuration, cloning", function () {
+        it("implements inheritance, instantiation, cloning", function () {
 
             var log = jasmine.createSpy(),
                 Cat = o3.Class.extend({
                     name: undefined,
+                    build: function () {
+                        ++Cat.counter;
+                    },
                     init: function (config) {
                         this.merge(config);
-                        ++Cat.counter;
+                        if (typeof(this.name) != "string")
+                            throw new o3.InvalidConfiguration("Invalid cat name.");
                     },
                     meow: function () {
                         log(this.name + ": meow");
@@ -32,21 +36,10 @@ describe("example", function () {
             expect(log).toHaveBeenCalledWith("Killer: meow");
             expect(Cat.count()).toBe(2);
 
-            kitty.merge({
-                configure: function (postfix) {
-                    this.name += " " + postfix;
-                }
-            });
-            kitty.configure("Cat");
-            kitty.meow();
-            expect(log).toHaveBeenCalledWith("Kitty Cat: meow");
-            kitty.configure("from London");
-            kitty.meow();
-            expect(log).toHaveBeenCalledWith("Kitty Cat from London: meow");
-
             var kittyClone = o3.clone(kitty);
             kittyClone.meow();
-            expect(log).toHaveBeenCalledWith("Kitty Cat from London: meow");
+            expect(log).toHaveBeenCalledWith("Kitty: meow");
+            expect(Cat.count()).toBe(3);
         });
 
         it("implements watch, unwatch", function () {

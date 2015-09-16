@@ -13,11 +13,13 @@ Other possible solution to use a compiled javascript relative like TypeScript, B
 ```js
 var Cat = o3.Class.extend({
     name: undefined,
+    build: function (){
+        ++Cat.counter;
+    },
     init: function (config) {
         this.merge(config);
         if (typeof(this.name) != "string")
             throw new o3.InvalidConfiguration("Invalid cat name.");
-        ++Cat.counter;
     },
     meow: function () {
         console.log(this.name + ": meow");
@@ -41,21 +43,11 @@ console.log(Cat.count()); // 2
 ```
 
 ```js
-kitty.merge(
-    configure: function (postfix) {
-        this.name += " " + postfix;
-    }
-);
-kitty.configure("Cat");
-kitty.meow(); // Kitty Cat: meow
-
-kitty.configure("from London");
-kitty.meow(); // Kitty Cat from London: meow
-```
-
-```js
 var kittyClone = clone(kitty);
-kittyClone.meow(); // Kitty Cat from London: meow
+kittyClone.meow(); // Kitty: meow
+
+console.log(Cat.count()); // 3
+console.log(kittyClone === kitty); // false
 ```
 
 #### watch object property changes (o3.watch, o3.unwatch)
@@ -207,6 +199,7 @@ An ES5 capable environment is required at least with
 - `Object.defineProperty`
 - `Object.getOwnPropertyDescriptor`
 - `Object.prototype.hasOwnProperty`
+- `Array.prototype.forEach // for the tests`
 
 The environment tests are available under the `/spec/environment.spec.js` file.
 

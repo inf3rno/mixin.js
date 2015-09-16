@@ -3,7 +3,7 @@ var o3 = require("o3"),
 
 describe("StackFrame.prototype", function () {
 
-    describe("configure", function () {
+    describe("init", function () {
 
         it("accepts only valid configuration", function () {
 
