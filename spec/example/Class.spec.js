@@ -2,7 +2,7 @@ var o3 = require("o3");
 
 describe("example", function () {
 
-    describe("inheritance, instantiation, configuration, cloning and unique id", function () {
+    describe("inheritance, instantiation, configuration, cloning", function () {
 
         it("implements inheritance, instantiation, configuration, cloning", function () {
 
@@ -47,14 +47,6 @@ describe("example", function () {
             var kittyClone = o3.clone(kitty);
             kittyClone.meow();
             expect(log).toHaveBeenCalledWith("Kitty Cat from London: meow");
-        });
-
-
-        it("implements unique id", function () {
-
-            var id1 = o3.id(),
-                id2 = o3.id();
-            expect(id1).not.toBe(id2);
         });
 
         it("implements watch, unwatch", function () {

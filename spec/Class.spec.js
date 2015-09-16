@@ -55,13 +55,6 @@ describe("Class", function () {
 
         describe("a new descendant constructor", function () {
 
-            it("defines a unique id to the instance", function () {
-                var A = Class.clone();
-                var a = new A();
-                var a2 = new A();
-                expect(a.id).not.toBe(a2.id);
-            });
-
             it("calls the build and init methods if they are set", function () {
 
                 var A = Class.clone();

@@ -16,26 +16,6 @@ var echo = function (message) {
     return message;
 };
 
-var lastId = 0;
-var id = function () {
-    return ++lastId;
-};
-Object.defineProperty(id, "last", {
-    configurable: false,
-    enumerable: true,
-    get: function () {
-        return lastId;
-    }
-});
-id.define = function (subject) {
-    Object.defineProperty(subject, "id", {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: id()
-    });
-};
-
 var watchObserver = "@observer";
 
 var watch = function (subject, property, listener) {
@@ -320,7 +300,6 @@ var Class = classBuilder
         },
         clone: function () {
             return classBuilder.setConstructor(function () {
-                id.define(this);
                 if (this.build instanceof Function)
                     this.build();
                 if (this.init instanceof Function)
@@ -340,7 +319,6 @@ var Class = classBuilder
         },
         clone: function () {
             var instance = shallowClone(this);
-            id.define(instance);
             if (instance.build instanceof Function)
                 instance.build();
             return instance;
@@ -354,7 +332,6 @@ var Class = classBuilder
 
 var newUserErrorConstructor = function () {
     return function () {
-        id.define(this);
         this.stackTrace = UserError.getCurrentStackTrace();
         Object.defineProperty(this, "stack", {
             configurable: false,
@@ -776,7 +753,6 @@ module.exports = {
     native: native,
     dummy: dummy,
     echo: echo,
-    id: id,
     watch: watch,
     unwatch: unwatch,
     clone: clone,

@@ -58,15 +58,6 @@ var kittyClone = clone(kitty);
 kittyClone.meow(); // Kitty Cat from London: meow
 ```
 
-#### unique id (o3.id)
-
-```js
-var id1 = o3.id();
-var id2 = o3.id();
-
-console.log(id1 != id2); // true
-```
-
 #### watch object property changes (o3.watch, o3.unwatch)
 
 ```js

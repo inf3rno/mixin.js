@@ -44,7 +44,6 @@ describe("UserError", function () {
             expect(MyError.prototype instanceof UserError);
             expect(MyError.prototype.a).toBe(1);
             expect(MyError.b).toBe(2);
-            expect(err.id).toBeDefined();
         });
 
     });
