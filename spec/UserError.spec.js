@@ -14,6 +14,27 @@ describe("UserError", function () {
         expect(UserError.prototype instanceof SyntaxError).toBe(false);
     });
 
+    describe("constructor", function () {
+
+        it("is almost the same as the Class descendant constructor except stack creation", function () {
+
+            var o = {
+                build: jasmine.createSpy(),
+                init: jasmine.createSpy(),
+                toStackString: jasmine.createSpy().and.callFake(function () {
+                    return "str";
+                })
+            };
+            UserError.call(o, 1, 2, 3);
+            expect(o.build).toHaveBeenCalled();
+            expect(o.init).toHaveBeenCalledWith(1, 2, 3);
+            expect(o.stackTrace instanceof StackTrace).toBe(true);
+            expect(o.toStackString).not.toHaveBeenCalled();
+            expect(o.stack).toBe("str");
+            expect(o.toStackString).toHaveBeenCalled();
+        });
+    });
+
     describe("extend", function () {
 
         it("calls the extend function on the class", function () {
@@ -24,18 +45,6 @@ describe("UserError", function () {
             expect(MyError.prototype.a).toBe(1);
             expect(MyError.b).toBe(2);
             expect(err.id).toBeDefined();
-        });
-
-    });
-
-    describe("merge", function () {
-
-        it("calls the merge function on the class", function () {
-
-            var MyError = UserError.extend();
-            MyError.merge({a: 1});
-            expect(MyError.a).toBe(1);
-
         });
 
     });
@@ -61,22 +70,6 @@ describe("UserError", function () {
                 expect(err.message).toBe("message");
             });
 
-        });
-
-        describe("configure", function () {
-
-            it("creates the stack getter", function () {
-
-                var err = new UserError();
-                expect(typeof (err.stack)).toBe("string");
-            });
-
-            it("creates the stackTrace object", function () {
-
-                var err = new UserError();
-                expect(err.stackTrace instanceof StackTrace).toBe(true);
-
-            });
         });
 
     });
@@ -121,11 +114,11 @@ describe("InvalidConfiguration", function () {
 
 describe("Message building by UserError descendants", function () {
 
-    it("is possible by overriding the configure", function () {
+    it("is possible by overriding the init", function () {
 
         var MyError = UserError.extend({
-            configure: function () {
-                this.message = this.x + "," + this.y;
+            init: function (o) {
+                this.message = o.x + "," + o.y;
             }
         });
         var err = new MyError({x: 1, y: 2});

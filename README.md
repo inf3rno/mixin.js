@@ -13,7 +13,8 @@ Other possible solution to use a compiled javascript relative like TypeScript, B
 ```js
 var Cat = o3.Class.extend({
     name: undefined,
-    configure: function () {
+    init: function (config) {
+        this.merge(config);
         if (typeof(this.name) != "string")
             throw new o3.InvalidConfiguration("Invalid cat name.");
         ++Cat.counter;

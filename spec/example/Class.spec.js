@@ -9,7 +9,8 @@ describe("example", function () {
             var log = jasmine.createSpy(),
                 Cat = o3.Class.extend({
                     name: undefined,
-                    configure: function () {
+                    init: function (config) {
+                        this.merge(config);
                         ++Cat.counter;
                     },
                     meow: function () {

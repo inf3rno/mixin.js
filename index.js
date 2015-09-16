@@ -337,7 +337,6 @@ var Class = classBuilder
     .mergePrototype({
         init: function () {
             this.merge.apply(this, arguments);
-            this.configure();
         },
         clone: function () {
             var instance = shallowClone(this);
@@ -348,8 +347,7 @@ var Class = classBuilder
         },
         merge: function (source) {
             return shallowMerge(this, toArray(arguments));
-        },
-        configure: dummy
+        }
     })
     .release();
 
@@ -357,6 +355,12 @@ var Class = classBuilder
 var newUserErrorConstructor = function () {
     return function () {
         id.define(this);
+        this.stackTrace = UserError.getCurrentStackTrace();
+        Object.defineProperty(this, "stack", {
+            configurable: false,
+            enumerable: false,
+            get: this.toStackString.bind(this)
+        });
         if (this.build instanceof Function)
             this.build();
         if (this.init instanceof Function)
@@ -382,16 +386,6 @@ var UserError = classBuilder.setConstructor(newUserErrorConstructor())
         name: "UserError",
         message: "",
         stackTrace: undefined,
-        init: function () {
-            this.merge.apply(this, arguments);
-            this.stackTrace = UserError.getCurrentStackTrace();
-            Object.defineProperty(this, "stack", {
-                configurable: false,
-                enumerable: false,
-                get: this.toStackString.bind(this)
-            });
-            this.configure();
-        },
         toStackString: function () {
             var string = "";
             string += this.name;
@@ -427,8 +421,8 @@ InvalidArguments.Empty = InvalidArguments.extend({
 });
 InvalidArguments.Nested = InvalidArguments.extend({
     path: undefined,
-    configure: function () {
-        InvalidArguments.prototype.configure.call(this);
+    init: function () {
+        InvalidArguments.prototype.init.apply(this, arguments);
         if (this.path instanceof Array)
             this.message = "Invalid arguments on path [" + this.path.join(",") + "]";
     }
@@ -509,7 +503,8 @@ var StackFrame = Class.extend({
     row: undefined,
     col: undefined,
     string: undefined,
-    configure: function () {
+    init: function () {
+        Class.prototype.init.apply(this, arguments);
         if (typeof (this.description) != "string")
             throw new StackFrame.DescriptionRequired();
         if (typeof (this.path) != "string")

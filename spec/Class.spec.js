@@ -65,10 +65,10 @@ describe("Class", function () {
             it("calls the build and init methods if they are set", function () {
 
                 var A = Class.clone();
-                var mockInit = jasmine.createSpy();
                 var mockBuild = jasmine.createSpy();
-                A.prototype.init = mockInit;
+                var mockInit = jasmine.createSpy();
                 A.prototype.build = mockBuild;
+                A.prototype.init = mockInit;
                 var a = new A(1, 2, 3);
                 expect(mockBuild).toHaveBeenCalled();
                 expect(mockInit).toHaveBeenCalledWith(1, 2, 3);
@@ -94,8 +94,7 @@ describe("Class", function () {
 
     describe("merge", function () {
 
-        it("calls the merge function on the class", function () {
-
+        it("calls the shallowMerge function on the class", function () {
             var My = Class.clone();
             My.merge({a: 1});
             expect(My.a).toBe(1);
@@ -107,26 +106,14 @@ describe("Class", function () {
 
         describe("init", function () {
 
-            it("calls merge, configure in this order", function () {
+            it("calls merge", function () {
 
                 var log = jasmine.createSpy();
                 var Descendant = Class.extend({
-                    build: function () {
-                        expect(this.id).toBeDefined();
-                        log("build", this, toArray(arguments));
-                    },
-                    merge: function (a, b) {
-                        log("merge", this, toArray(arguments));
-                    },
-                    configure: function () {
-                        log("configure", this, toArray(arguments));
-                    }
+                    merge: log
                 });
                 var descendant = new Descendant({a: 1}, {b: 2});
-                expect(log.calls.argsFor(0)).toEqual(["build", descendant, []]);
-                expect(log.calls.argsFor(1)).toEqual(["merge", descendant, [{a: 1}, {b: 2}]]);
-                expect(log.calls.argsFor(2)).toEqual(["configure", descendant, []]);
-                expect(log.calls.count()).toBe(3);
+                expect(log).toHaveBeenCalledWith({a: 1}, {b: 2});
             });
 
         });
