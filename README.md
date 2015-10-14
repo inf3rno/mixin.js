@@ -64,7 +64,7 @@ o.x = 3; // not logged
 o.x = 4; // not logged
 ```
 
-#### function wrapper (o3.Wrapper, o3.Wrapper.algorithm)
+#### function wrapper (o3.FunctionWrapper, o3.FunctionWrapper.algorithm)
 
 ```js
 var o = {
@@ -73,8 +73,8 @@ var o = {
         return [a, b, c];
     }
 };
-o.m = new o3.Wrapper({
-    algorithm: Wrapper.algorithm.cascade,
+o.m = new o3.FunctionWrapper({
+    algorithm: FunctionWrapper.algorithm.cascade,
     preprocessors: [
         function (a, b, c) {
             console.log("reversing", a, b, c);

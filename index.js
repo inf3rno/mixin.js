@@ -515,7 +515,7 @@ var StackFrame = Class.extend({
     })
 });
 
-var Wrapper = Class.extend({
+var FunctionWrapper = Class.extend({
     preprocessors: [],
     done: function () {
         return toArray(arguments);
@@ -545,23 +545,23 @@ var Wrapper = Class.extend({
                     preprocessors: {
                         subject: function (subjectPreprocessors, preprocessors, eachProperty) {
                             if (!(preprocessors instanceof Array))
-                                throw new Wrapper.ArrayRequired();
+                                throw new FunctionWrapper.ArrayRequired();
                             eachProperty();
                             subjectPreprocessors.push.apply(subjectPreprocessors, preprocessors);
                         },
                         defaultProperty: function (subjectPreprocessors, preprocessor) {
                             if (!(preprocessor instanceof Function))
-                                throw new Wrapper.PreprocessorRequired();
+                                throw new FunctionWrapper.PreprocessorRequired();
                         }
                     },
                     done: function (wrapper, done) {
                         if (!(done instanceof Function))
-                            throw new Wrapper.FunctionRequired();
+                            throw new FunctionWrapper.FunctionRequired();
                         return done;
                     },
                     algorithm: function (wrapper, algorithm) {
                         if (!(algorithm instanceof Function))
-                            throw new Wrapper.AlgorithmRequired();
+                            throw new FunctionWrapper.AlgorithmRequired();
                         return algorithm;
                     },
                     properties: {
@@ -579,7 +579,7 @@ var Wrapper = Class.extend({
     toFunction: function () {
         var func = this.algorithm(this);
         if (!(func instanceof Function))
-            throw new Wrapper.InvalidAlgorithm();
+            throw new FunctionWrapper.InvalidAlgorithm();
         shallowMerge(func, [
             {
                 wrapper: this
@@ -597,7 +597,7 @@ var Wrapper = Class.extend({
                     var preprocessor = wrapper.preprocessors[index];
                     var result = preprocessor.apply(this, parameters);
                     if (!(result instanceof Array))
-                        throw new Wrapper.InvalidPreprocessor();
+                        throw new FunctionWrapper.InvalidPreprocessor();
                     parameters = result;
                 }
                 return wrapper.done.apply(this, parameters);
@@ -612,7 +612,7 @@ var Wrapper = Class.extend({
                     match = preprocessor.apply(this, arguments);
                     if (match !== undefined) {
                         if (!(match instanceof Array))
-                            throw new Wrapper.InvalidPreprocessor();
+                            throw new FunctionWrapper.InvalidPreprocessor();
                         parameters = match;
                         break;
                     }
@@ -630,7 +630,7 @@ var Wrapper = Class.extend({
                         match = preprocessor.apply(this, parameters);
                         if (match !== undefined) {
                             if (!(match instanceof Array))
-                                throw new Wrapper.InvalidPreprocessor();
+                                throw new FunctionWrapper.InvalidPreprocessor();
                             parameters = match;
                             break;
                         }
@@ -663,8 +663,8 @@ var Wrapper = Class.extend({
     })
 });
 
-UserError.prototype.merge = new Wrapper({
-    algorithm: Wrapper.algorithm.firstMatch,
+UserError.prototype.merge = new FunctionWrapper({
+    algorithm: FunctionWrapper.algorithm.firstMatch,
     preprocessors: [
         function (message) {
             if (typeof (message) == "string")
@@ -700,8 +700,8 @@ var StackStringParser = Class.extend({
             frames.push(this.parseFrameString(frameStrings[index]));
         return frames;
     },
-    parseFrameString: new Wrapper({
-        algorithm: Wrapper.algorithm.firstMatch,
+    parseFrameString: new FunctionWrapper({
+        algorithm: FunctionWrapper.algorithm.firstMatch,
         preprocessors: [
             function (frameString) {
                 var match = frameString.match(/^\s*at\s+(?:\s*(.*?)\s*)\((.+):(\d+):(\d+)\)\s*$/);
@@ -773,6 +773,6 @@ module.exports = {
     StackStringParser: StackStringParser,
     StackTrace: StackTrace,
     StackFrame: StackFrame,
-    Wrapper: Wrapper
+    FunctionWrapper: FunctionWrapper
 };
 

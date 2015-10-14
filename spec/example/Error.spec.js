@@ -2,9 +2,9 @@ var o3 = require("o3");
 
 describe("example", function () {
 
-    describe("2. wrapper, user errors", function () {
+    describe("2. function wrapper, user errors", function () {
 
-        it("implements wrapper", function () {
+        it("implements function wrapper", function () {
 
             var m = jasmine.createSpy();
             var o = {
@@ -13,8 +13,8 @@ describe("example", function () {
             var p = jasmine.createSpy().and.callFake(function () {
                 return o3.toArray(arguments);
             });
-            o.m = new o3.Wrapper({
-                algorithm: o3.Wrapper.algorithm.cascade,
+            o.m = new o3.FunctionWrapper({
+                algorithm: o3.FunctionWrapper.algorithm.cascade,
                 preprocessors: [p],
                 done: o.m
             }).toFunction();

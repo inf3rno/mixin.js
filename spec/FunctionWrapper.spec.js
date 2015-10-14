@@ -1,5 +1,5 @@
 var o3 = require("o3"),
-    Wrapper = o3.Wrapper,
+    FunctionWrapper = o3.FunctionWrapper,
     InvalidArguments = o3.InvalidArguments,
     dummy = o3.dummy,
     uniqueDummy = function () {
@@ -7,7 +7,7 @@ var o3 = require("o3"),
         };
     };
 
-describe("Wrapper", function () {
+describe("FunctionWrapper", function () {
 
     describe("prototype", function () {
 
@@ -15,7 +15,7 @@ describe("Wrapper", function () {
 
             it("clones the preprocessors Array", function () {
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [dummy]
                 });
                 var wrapper2 = Object.create(wrapper);
@@ -27,7 +27,7 @@ describe("Wrapper", function () {
 
             it("clones the properties Object", function () {
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     properties: {
                         a: {}
                     }
@@ -46,23 +46,23 @@ describe("Wrapper", function () {
             it("accepts only object, null or undefined as sources", function () {
 
                 expect(function () {
-                    new Wrapper().merge({});
+                    new FunctionWrapper().merge({});
                 }).not.toThrow();
 
                 expect(function () {
-                    new Wrapper().merge();
+                    new FunctionWrapper().merge();
                 }).not.toThrow();
 
                 expect(function () {
-                    new Wrapper().merge(null);
+                    new FunctionWrapper().merge(null);
                 }).toThrow(new InvalidArguments.Nested({path: [0]}));
 
                 expect(function () {
-                    new Wrapper().merge({}, {});
+                    new FunctionWrapper().merge({}, {});
                 }).not.toThrow();
 
                 expect(function () {
-                    new Wrapper().merge("a");
+                    new FunctionWrapper().merge("a");
                 }).toThrow(new InvalidArguments.Nested({path: [0]}));
             });
 
@@ -70,64 +70,64 @@ describe("Wrapper", function () {
             it("accepts only an Array of Functions as preprocessors", function () {
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         preprocessors: []
                     });
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         preprocessors: [dummy, dummy]
                     });
                 }).not.toThrow();
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         preprocessors: {}
                     })
-                }).toThrow(new Wrapper.ArrayRequired());
+                }).toThrow(new FunctionWrapper.ArrayRequired());
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         preprocessors: [dummy, {}]
                     })
-                }).toThrow(new Wrapper.PreprocessorRequired());
+                }).toThrow(new FunctionWrapper.PreprocessorRequired());
 
             });
 
             it("accepts only a Function as done", function () {
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         done: dummy
                     })
                 }).not.toThrow();
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         done: {}
                     })
-                }).toThrow(new Wrapper.FunctionRequired());
+                }).toThrow(new FunctionWrapper.FunctionRequired());
 
             });
 
             it("accepts only a Function as algorithm", function () {
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         algorithm: dummy
                     })
                 }).not.toThrow();
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         algorithm: {}
                     })
-                }).toThrow(new Wrapper.AlgorithmRequired());
+                }).toThrow(new FunctionWrapper.AlgorithmRequired());
 
             });
 
             it("accepts only Object instance as properties", function () {
 
                 expect(function () {
-                    new Wrapper().merge({
+                    new FunctionWrapper().merge({
                         properties: {}
                     });
                 }).not.toThrow();
@@ -140,7 +140,7 @@ describe("Wrapper", function () {
                     null
                 ].forEach(function (invalidProperties) {
                         expect(function () {
-                            new Wrapper().merge({
+                            new FunctionWrapper().merge({
                                 properties: invalidProperties
                             })
                         }).toThrow(new InvalidArguments.Nested({path: [0, "properties"]}));
@@ -150,7 +150,7 @@ describe("Wrapper", function () {
             it("returns the context itself", function () {
 
                 var o = {};
-                expect(Wrapper.prototype.merge.call(o)).toBe(o);
+                expect(FunctionWrapper.prototype.merge.call(o)).toBe(o);
             });
 
             it("merges pushes preprocessors if given", function () {
@@ -168,7 +168,7 @@ describe("Wrapper", function () {
                     o = {
                         preprocessors: a
                     };
-                Wrapper.prototype.merge.call(o, {
+                FunctionWrapper.prototype.merge.call(o, {
                     preprocessors: b
                 }, {
                     preprocessors: c
@@ -185,7 +185,7 @@ describe("Wrapper", function () {
                 var o = {
                     done: a
                 };
-                Wrapper.prototype.merge.call(o, {
+                FunctionWrapper.prototype.merge.call(o, {
                     done: b
                 });
                 expect(o.done).toBe(b);
@@ -198,7 +198,7 @@ describe("Wrapper", function () {
                 var o = {
                     algorithm: a
                 };
-                Wrapper.prototype.merge.call(o, {
+                FunctionWrapper.prototype.merge.call(o, {
                     algorithm: b
                 });
                 expect(o.algorithm).toBe(b);
@@ -211,7 +211,7 @@ describe("Wrapper", function () {
                     o = {
                         properties: {}
                     };
-                Wrapper.prototype.merge.call(o, {
+                FunctionWrapper.prototype.merge.call(o, {
                     properties: a
                 }, {
                     properties: b
@@ -228,7 +228,7 @@ describe("Wrapper", function () {
             it("extends the results returned by the algorithm with the properties given in options", function () {
 
                 var log = jasmine.createSpy();
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     algorithm: function (wrapper) {
                         log(wrapper);
                         return log;
@@ -267,9 +267,9 @@ describe("Wrapper", function () {
                     return [c, a, b];
                 });
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [pp1, pp2],
-                    algorithm: Wrapper.algorithm.cascade
+                    algorithm: FunctionWrapper.algorithm.cascade
                 });
                 var fn = wrapper.toFunction();
 
@@ -288,9 +288,9 @@ describe("Wrapper", function () {
                     return [c, b, a];
                 });
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     done: done,
-                    algorithm: Wrapper.algorithm.cascade
+                    algorithm: FunctionWrapper.algorithm.cascade
                 });
                 var fn = wrapper.toFunction();
 
@@ -308,10 +308,10 @@ describe("Wrapper", function () {
                     return [c, a, b];
                 });
                 var done = jasmine.createSpy();
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [pp1, pp2],
                     done: done,
-                    algorithm: Wrapper.algorithm.cascade
+                    algorithm: FunctionWrapper.algorithm.cascade
                 });
                 var fn = wrapper.toFunction();
 
@@ -326,16 +326,16 @@ describe("Wrapper", function () {
 
             it("accepts only Array as preprocessor result", function () {
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [
                         function () {
                             return "a";
                         }
                     ],
-                    algorithm: Wrapper.algorithm.cascade
+                    algorithm: FunctionWrapper.algorithm.cascade
                 });
                 var fn = wrapper.toFunction();
-                expect(fn).toThrow(new Wrapper.InvalidPreprocessor());
+                expect(fn).toThrow(new FunctionWrapper.InvalidPreprocessor());
             });
 
         });
@@ -350,9 +350,9 @@ describe("Wrapper", function () {
                     return [c, b, a];
                 });
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     done: done,
-                    algorithm: Wrapper.algorithm.firstMatch
+                    algorithm: FunctionWrapper.algorithm.firstMatch
                 });
                 var fn = wrapper.toFunction();
 
@@ -369,10 +369,10 @@ describe("Wrapper", function () {
                 });
                 var pp3 = jasmine.createSpy();
                 var done = jasmine.createSpy();
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [pp1, pp2, pp3],
                     done: done,
-                    algorithm: Wrapper.algorithm.firstMatch
+                    algorithm: FunctionWrapper.algorithm.firstMatch
                 });
                 var fn = wrapper.toFunction();
 
@@ -389,16 +389,16 @@ describe("Wrapper", function () {
 
             it("accepts only Array or undefined as preprocessor result", function () {
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [
                         function () {
                             return "a";
                         }
                     ],
-                    algorithm: Wrapper.algorithm.firstMatch
+                    algorithm: FunctionWrapper.algorithm.firstMatch
                 });
                 var fn = wrapper.toFunction();
-                expect(fn).toThrow(new Wrapper.InvalidPreprocessor());
+                expect(fn).toThrow(new FunctionWrapper.InvalidPreprocessor());
             });
 
         });
@@ -413,9 +413,9 @@ describe("Wrapper", function () {
                     return [c, b, a];
                 });
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     done: done,
-                    algorithm: Wrapper.algorithm.firstMatch
+                    algorithm: FunctionWrapper.algorithm.firstMatch
                 });
                 var fn = wrapper.toFunction();
 
@@ -439,10 +439,10 @@ describe("Wrapper", function () {
                         return [3];
                 });
                 var done = jasmine.createSpy();
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [pp1, pp2, pp3],
                     done: done,
-                    algorithm: Wrapper.algorithm.firstMatchCascade
+                    algorithm: FunctionWrapper.algorithm.firstMatchCascade
                 });
                 var fn = wrapper.toFunction();
 
@@ -469,16 +469,16 @@ describe("Wrapper", function () {
 
             it("accepts only Array or undefined as preprocessor result", function () {
 
-                var wrapper = new Wrapper({
+                var wrapper = new FunctionWrapper({
                     preprocessors: [
                         function () {
                             return "a";
                         }
                     ],
-                    algorithm: Wrapper.algorithm.firstMatchCascade
+                    algorithm: FunctionWrapper.algorithm.firstMatchCascade
                 });
                 var fn = wrapper.toFunction();
-                expect(fn).toThrow(new Wrapper.InvalidPreprocessor());
+                expect(fn).toThrow(new FunctionWrapper.InvalidPreprocessor());
             });
 
         });
