@@ -21,11 +21,13 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine & mocha --reporter spec yadda.js"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "jasmine": ">=2.2.0"
+    "expect.js": "^0.3.1",
+    "jasmine": ">=2.2.0",
+    "mocha": "^2.4.5",
+    "yadda": "^0.17.2"
   }
 }
