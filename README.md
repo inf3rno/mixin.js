@@ -2,10 +2,8 @@
 
 [![Build Status](https://travis-ci.org/inf3rno/o3.png?branch=master)](https://travis-ci.org/inf3rno/o3)
 
-This small lib contains prototypal inheritance support for javascript applications.
-
-Ofc. I'd rather use ES6, but until that becomes widely supported, this library will be just enough for programming object-oriented javascript...
-Other possible solution to use a compiled javascript relative like TypeScript, Babel or Traceur, which has ES6 class support.
+This class lib contains prototypal inheritance and enhanced error handling for javascript applications.
+Other possible solutions to use a compiled javascript relative like TypeScript, Babel or Traceur, which has ES6 class support.
 
 ### Examples
 
@@ -160,17 +158,9 @@ catch (err) {
 }
 ```
 
-## Documentation
-
-No documentation available yet.
-
-*A detailed documentation will be available on GitHub Pages by version 1.0.*
-
 ### Installation
 
 Only node.js is supported yet.
-
-*I'll add browserify support and karma tests by 1.0*
 
 #### Package managers
 
@@ -216,39 +206,6 @@ I test with [Jasmine](https://github.com/jasmine/jasmine) 2.2.
 
 By node.js 0.10.36 I used [jasmine-npm](https://github.com/jasmine/jasmine-npm) 2.2.0.
 
-*By browsers I will use [karma](https://github.com/karma-runner/karma) x.x.x & [karma-jasmine](https://github.com/karma-runner/karma-jasmine) x.x.x.
-Browser tests will be available by 1.0.*
-
-You must be able to `require("o3")` if you want to run the tests.
-If you install the framework with `npm install` then this is not an issue.
-
-If you have installed it manually, than you have the following options.
-
-1. You can set the environment variable `NODE_PATH` to `../` if you use WebStorm,
-or you can do it from the terminal before running the tests.
-
-    ```bash
-    cd o3
-    export NODE_PATH=../
-    npm run test
-    ```
-
-    Adding the parent folder to the environment variable is like putting the directory into the `node_modules`.
-    The directory name must be `o3`, because it is loaded based on that (the name in the `package.json` does not matter in this case).
-
-2. You can use `npm link`.
-3. You can use `symlink`.
-
-I never tried out the latter ones, but according to many articles they work.
-
-#### Code completion
-
-No code completion support yet.
-
-*[WebStorm](https://www.jetbrains.com/webstorm/) support will be available by 1.1.
-Probably other IDEs and editors will be supported as well.*
-
-
 ## License
 
-MIT - 2015 Jánszky László Lajos
+MIT - 2015 Jï¿½nszky Lï¿½szlï¿½ Lajos

@@ -1,10 +1,10 @@
 var o3 = require(".."),
-    shallowClone = o3.shallowClone,
+    deepClone = o3.deepClone,
     dummy = o3.dummy;
 
 describe("core", function () {
 
-    describe("shallowClone", function () {
+    describe("deepClone", function () {
 
         it("returns the same primitives", function () {
             [
@@ -16,14 +16,14 @@ describe("core", function () {
                 false,
                 dummy
             ].forEach(function (value) {
-                    expect(shallowClone(value)).toBe(value);
+                    expect(deepClone(value)).toBe(value);
                 });
         });
 
         it("returns a different Array with the same values", function () {
 
             var a = [{}, 1, 2, 3];
-            var b = shallowClone(a);
+            var b = deepClone(a);
             expect(b).toEqual(a);
             expect(b).not.toBe(a);
             expect(b[0]).toBe(a[0]);
@@ -32,7 +32,7 @@ describe("core", function () {
         it("returns a different Date with the same time", function () {
 
             var a = new Date();
-            var b = shallowClone(a);
+            var b = deepClone(a);
             expect(b instanceof Date);
             expect(b).not.toBe(a);
             expect(b.toString()).toBe(a.toString());
@@ -41,7 +41,7 @@ describe("core", function () {
         it("returns a different RegExp with the same pattern and flags", function () {
 
             var a = /\w/gm;
-            var b = shallowClone(a);
+            var b = deepClone(a);
             expect(b instanceof RegExp);
             expect(b).not.toBe(a);
             expect(b.toString()).toBe(a.toString());
@@ -50,7 +50,7 @@ describe("core", function () {
         it("returns a descendant Object created with Object.create", function () {
 
             var a = {x: {}, y: 1};
-            var b = shallowClone(a);
+            var b = deepClone(a);
             expect(b).not.toBe(a);
             expect(b.x).toBe(a.x);
             a.y = 2;

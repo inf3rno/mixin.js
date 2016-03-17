@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     echo = o3.echo;
 
 describe("core", function () {

@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     UserError = o3.UserError,
     InvalidArguments = o3.InvalidArguments,
     InvalidResult = o3.InvalidResult,

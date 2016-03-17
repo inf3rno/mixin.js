@@ -97,6 +97,10 @@ var shallowClone = function (subject) {
     return Object.create(subject);
 };
 
+var deepClone = function (subject, meta) {
+    return shallowClone(subject);
+};
+
 var merge = function (subject, source) {
     if (!(subject instanceof Object))
         throw new InvalidArguments();
@@ -121,6 +125,12 @@ var shallowMerge = function (subject, sources) {
             subject[property] = source[property];
     }
     return subject;
+};
+
+
+
+var deepMerge = function (subject, sources, meta) {
+    return shallowMerge(subject, sources);
 };
 
 var deep = function (subject, source, options, path) {
@@ -757,8 +767,10 @@ module.exports = {
     unwatch: unwatch,
     clone: clone,
     shallowClone: shallowClone,
+    deepClone: deepClone,
     merge: merge,
     shallowMerge: shallowMerge,
+    deepMerge: deepMerge,
     deep: deep,
     toArray: toArray,
     ClassBuilder: ClassBuilder,

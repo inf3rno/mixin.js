@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     clone = o3.clone;
 
 describe("core", function () {

@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     FunctionWrapper = o3.FunctionWrapper,
     InvalidArguments = o3.InvalidArguments,
     dummy = o3.dummy,

@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     dummy = o3.dummy;
 
 describe("core", function () {

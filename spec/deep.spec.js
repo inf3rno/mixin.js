@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     deep = o3.deep,
     InvalidArguments = o3.InvalidArguments,
     dummy = o3.dummy,

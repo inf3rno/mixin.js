@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     merge = o3.merge;
 
 describe("core", function () {

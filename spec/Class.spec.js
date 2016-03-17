@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     Class = o3.Class,
     InstantiatingAbstractClass = o3.InstantiatingAbstractClass,
     InvalidArguments = o3.InvalidArguments,

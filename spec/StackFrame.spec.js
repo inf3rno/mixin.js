@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     StackFrame = o3.StackFrame;
 
 describe("StackFrame.prototype", function () {

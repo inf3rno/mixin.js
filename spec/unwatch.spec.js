@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     watch = o3.watch,
     unwatch = o3.unwatch,
     InvalidArguments = o3.InvalidArguments,

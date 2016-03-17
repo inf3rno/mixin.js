@@ -1,4 +1,4 @@
-var o3 = require("o3"),
+var o3 = require(".."),
     CompositeError = o3.CompositeError,
     UserError = o3.UserError,
     StackTrace = o3.StackTrace;
