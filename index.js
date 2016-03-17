@@ -1,5 +1,3 @@
-var EventEmitter = require("events").EventEmitter;
-
 var global = (function () {
     return this;
 })();
@@ -14,69 +12,6 @@ var dummy = function () {
 
 var echo = function (message) {
     return message;
-};
-
-var watchObserver = "@observer";
-
-var watch = function (subject, property, listener) {
-    if (!(subject instanceof Object))
-        throw new InvalidArguments();
-    if (typeof (property) != "string")
-        throw new InvalidArguments();
-    if (!(listener instanceof Function))
-        throw new InvalidArguments();
-
-    var observer = subject[watchObserver];
-    if (!subject.hasOwnProperty(watchObserver)) {
-        observer = new EventEmitter();
-        observer.values = {};
-        Object.defineProperty(subject, watchObserver, {
-            writable: false,
-            enumerable: false,
-            configurable: false,
-            value: observer
-        });
-    }
-    if (!observer.values.hasOwnProperty(property)) {
-        var enumerable = true;
-        if (subject.hasOwnProperty(property)) {
-            var descriptor = Object.getOwnPropertyDescriptor(subject, property);
-            if (!descriptor.configurable)
-                throw new InvalidArguments();
-            if (descriptor.set || descriptor.get)
-                throw new InvalidArguments();
-            if (!descriptor.writable)
-                throw new InvalidArguments();
-            enumerable = descriptor.enumerable;
-        }
-        observer.values[property] = subject[property];
-        Object.defineProperty(subject, property, {
-            set: function (value) {
-                var oldValue = observer.values[property];
-                observer.values[property] = value;
-                if (value !== oldValue)
-                    observer.emit(property, value, oldValue, property, subject);
-            },
-            get: function () {
-                return observer.values[property];
-            },
-            enumerable: enumerable,
-            configurable: false
-        });
-    }
-    observer.on(property, listener);
-};
-
-var unwatch = function (subject, property, listener) {
-    if (!(subject instanceof Object))
-        throw new InvalidArguments();
-    if (typeof (property) != "string")
-        throw new InvalidArguments();
-    if (!(listener instanceof Function))
-        throw new InvalidArguments();
-
-    if (subject.hasOwnProperty(watchObserver))
-        subject[watchObserver].removeListener(property, listener);
 };
 
 var clone = function (subject) {
@@ -763,8 +698,6 @@ module.exports = {
     native: native,
     dummy: dummy,
     echo: echo,
-    watch: watch,
-    unwatch: unwatch,
     clone: clone,
     shallowClone: shallowClone,
     deepClone: deepClone,

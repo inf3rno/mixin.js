@@ -48,20 +48,6 @@ console.log(Cat.count()); // 3
 console.log(kittyClone === kitty); // false
 ```
 
-#### watch object property changes (o3.watch, o3.unwatch)
-
-```js
-var o = {x:0};
-
-o3.watch(o, "x", console.log);
-o.x = 1; // 1 0 x {x:1}
-o.x = 2; // 2 1 x {x:2}
-
-o3.unwatch(o, "x", console.log);
-o.x = 3; // not logged
-o.x = 4; // not logged
-```
-
 #### function wrapper (o3.FunctionWrapper, o3.FunctionWrapper.algorithm)
 
 ```js
@@ -192,11 +178,6 @@ An ES5 capable environment is required at least with
 - `Array.prototype.forEach // for the tests`
 
 The environment tests are available under the `/spec/environment.spec.js` file.
-
-##### Module dependencies
-
-It requires `events.EventEmitter` for watching property changes.
-If you have an environment, which supports `Object.observe`, you won't need this framework.
 
 ### Integration
 
