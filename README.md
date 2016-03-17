@@ -208,4 +208,4 @@ By node.js 0.10.36 I used [jasmine-npm](https://github.com/jasmine/jasmine-npm) 
 
 ## License
 
-MIT - 2015 J�nszky L�szl� Lajos
+MIT - 2015 Jánszky László Lajos
