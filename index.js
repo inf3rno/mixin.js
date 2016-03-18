@@ -1,12 +1,3 @@
-var global = (function () {
-    return this;
-})();
-
-var native = {
-    global: global,
-    console: global.console
-};
-
 var dummy = function () {
 };
 
@@ -695,7 +686,6 @@ var StackStringParser = Class.extend({
 });
 
 module.exports = {
-    native: native,
     dummy: dummy,
     echo: echo,
     clone: clone,

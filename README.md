@@ -146,12 +146,6 @@ catch (err) {
 
 ### Installation
 
-Only node.js is supported yet.
-
-#### Package managers
-
-You can install the lib from npm and bower:
-
 ```bash
 npm install o3
 ```
@@ -160,14 +154,7 @@ npm install o3
 bower install o3
 ```
 
-#### Manual installation
-
-Just copy paste the directory to the `node_modules` or user browserify on the `index.js` if you want to use it in a browser.
-You can override the `module.exports`` part and put the whole code in a closure if you want to use it as an AMD style module or vanilla.js.
-
 #### Requirements
-
-##### Environment requirements
 
 An ES5 capable environment is required at least with
 
@@ -177,15 +164,9 @@ An ES5 capable environment is required at least with
 - `Object.prototype.hasOwnProperty`
 - `Array.prototype.forEach // for the tests`
 
-The environment tests are available under the `/spec/environment.spec.js` file.
+### Testing
 
-### Integration
-
-#### Testing
-
-I test with [Jasmine](https://github.com/jasmine/jasmine) 2.2.
-
-By node.js 0.10.36 I used [jasmine-npm](https://github.com/jasmine/jasmine-npm) 2.2.0.
+I used [jasmine-npm](https://github.com/jasmine/jasmine-npm) 2.2.0.
 
 ## License
 

@@ -31,7 +31,7 @@ Feature: Class
     When I add new properties
     Then the class should use the custom merging algorithm to add the new properties
 
-  Scenario: Instantiating the abstract base Class is not allowed
+  Scenario: Instantiating the abstract base Class is not possible
     When I try to instantiate the base Class
     Then it should throw an Error, because of abstract class instantiation
 
