@@ -296,7 +296,7 @@ var UserError = classBuilder.setConstructor(newUserErrorConstructor())
         toStackString: function () {
             var string = "";
             string += this.name;
-            string += " " + this.message + "\n";
+            string += ": " + this.message + "\n";
             string += this.stackTrace;
             return string;
         }

@@ -22,7 +22,7 @@ module.exports = function () {
 
     this.Then(/^it should contain a stack string$/, function (next) {
         expect(instance.toString()).to.be("UserError: problem");
-        expect(/UserError problem/.test(instance.stack)).to.be.ok();
+        expect(/UserError: problem/.test(instance.stack)).to.be.ok();
         expect(/at .*\.js:\d+:\d+/.test(instance.stack)).to.be.ok();
         next();
     });

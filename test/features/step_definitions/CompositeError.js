@@ -30,10 +30,10 @@ module.exports = function () {
 
     this.Then(/^it should have a joined stack with the stacks of the Error attributes$/, function (next) {
         expect(instance.toString()).to.be("CompositeError: xxx");
-        expect(/CompositeError xxx/.test(instance.stack)).to.be.ok();
+        expect(/CompositeError: xxx/.test(instance.stack)).to.be.ok();
         expect(/caused by <a> Error: yyy/.test(instance.stack)).to.be.ok();
-        expect(/caused by <b> CompositeError zzz/.test(instance.stack)).to.be.ok();
-        expect(/caused by <b.x> UserError qqq/.test(instance.stack)).to.be.ok();
+        expect(/caused by <b> CompositeError: zzz/.test(instance.stack)).to.be.ok();
+        expect(/caused by <b.x> UserError: qqq/.test(instance.stack)).to.be.ok();
         expect(/at .*\.js:\d+:\d+/.test(instance.stack)).to.be.ok();
         next();
     });
