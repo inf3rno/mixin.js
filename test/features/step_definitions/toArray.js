@@ -53,7 +53,7 @@ module.exports = function () {
 
     this.Then(/^I should get the copy of that Array$/, function (next) {
         expect(result).to.eql(arg);
-        expect(result).not.to.equal(arg);
+        expect(result).not.to.be(arg);
         next();
     });
 

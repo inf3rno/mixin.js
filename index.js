@@ -53,12 +53,6 @@ var shallowMerge = function (subject, sources) {
     return subject;
 };
 
-
-
-var deepMerge = function (subject, sources, meta) {
-    return shallowMerge(subject, sources);
-};
-
 var deep = function (subject, source, options, path) {
     if (!path)
         path = [];
@@ -369,7 +363,6 @@ var CompositeError = UserError.extend({
 
 var StackTrace = Class.extend({
     frames: [],
-    string: undefined,
     build: function () {
         this.frames = shallowClone(this.frames);
     },
@@ -397,9 +390,7 @@ var StackTrace = Class.extend({
         return this;
     },
     toString: function () {
-        if (this.string === undefined)
-            this.string = this.frames.join("\n");
-        return this.string;
+        return this.frames.join("\n");
     }
 }, {
     StackFramesRequired: InvalidConfiguration.extend({
@@ -428,13 +419,10 @@ var StackFrame = Class.extend({
             throw new StackFrame.ColRequired();
     },
     toString: function () {
-        if (this.string !== undefined)
-            return this.string;
-        this.string = "\tat " + this.description + " (" + this.path + ":" + this.row + ":" + this.col + ")";
+        var string = "\tat " + this.description + " (" + this.path + ":" + this.row + ":" + this.col + ")";
         if (this.description === "")
-            this.string = this.string.replace("  ", " ");
-
-        return this.string;
+            string = string.replace("  ", " ");
+        return string;
     }
 }, {
     DescriptionRequired: InvalidConfiguration.extend({
@@ -690,10 +678,8 @@ module.exports = {
     echo: echo,
     clone: clone,
     shallowClone: shallowClone,
-    deepClone: deepClone,
     merge: merge,
     shallowMerge: shallowMerge,
-    deepMerge: deepMerge,
     deep: deep,
     toArray: toArray,
     ClassBuilder: ClassBuilder,
