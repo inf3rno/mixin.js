@@ -1,6 +1,6 @@
 {
   "name": "o3",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "o3 - Javascript Class Framework",
   "keywords": [
     "inheritance",
@@ -30,13 +30,13 @@
     "package.json"
   ],
   "scripts": {
-    "test": "jasmine & mocha --reporter spec yadda.js"
+    "test": "mocha --reporter spec yadda.js",
+    "examples": "node examples"
   },
   "dependencies": {
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "jasmine": ">=2.2.0",
     "mocha": "^2.4.5",
     "sinon": "^1.17.3",
     "yadda": "^0.17.2"

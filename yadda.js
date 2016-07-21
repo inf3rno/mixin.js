@@ -5,7 +5,7 @@ var English = Yadda.localisation.English;
 
 var path = require("path");
 
-new Yadda.FeatureFileSearch("./test/features").each(function (file) {
+new Yadda.FeatureFileSearch("./features").each(function (file) {
 
     featureFile(file, function (feature) {
 

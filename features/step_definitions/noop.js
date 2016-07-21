@@ -1,13 +1,12 @@
 var expect = require("expect.js"),
-    o3 = require("../../.."),
-    dummy = o3.dummy;
+    noop = require("../../lib/noop");
 
 module.exports = function () {
 
     var result;
 
-    this.When(/^I call dummy with any argument$/, function (next) {
-        result = dummy(1, 2, 3);
+    this.When(/^I call noop with any argument$/, function (next) {
+        result = noop(1, 2, 3);
         next();
     });
 

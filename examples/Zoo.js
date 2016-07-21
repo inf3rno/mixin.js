@@ -1,17 +1,5 @@
-# Ozone - Javascript Class Framework
+var o3 = require("..");
 
-[![Build Status](https://travis-ci.org/inf3rno/o3.png?branch=master)](https://travis-ci.org/inf3rno/o3)
-
-The Ozone class framework contains enhanced class support and error handling to ease the development of object-oriented javascript applications.
-Another alternative to get a better class support to use ES6 classes and compilers like Babel, Traceur or TypeScript.
-
-### Examples
-
-#### Class support
-
-Prototypal inheritance with the Class function:
-
-```js
 var Animal = o3.Class(Object, {
     type: "Animal",
     count: 0,
@@ -91,36 +79,3 @@ console.log(Pinkie.toString());
 console.log(Dolphin.toString());
 console.log(Flipper.toString());
 console.log(Shedd.toString());
-
-```
-
-
-
-
-### Installation
-
-```bash
-npm install o3
-```
-
-```bash
-bower install o3
-```
-
-#### Requirements
-
-An ES5 capable environment is required at least with
-
-- `Object.create`
-- `Object.defineProperty`
-- `Object.getOwnPropertyDescriptor`
-- `Object.prototype.hasOwnProperty`
-- `Array.prototype.forEach`
-
-### Testing
-
-I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
-
-## License
-
-MIT - 2015 Jánszky László Lajos
