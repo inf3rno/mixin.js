@@ -30,8 +30,7 @@
     "package.json"
   ],
   "scripts": {
-    "test": "mocha --reporter spec yadda.js",
-    "examples": "node examples"
+    "test": "mocha --reporter spec yadda.js"
   },
   "dependencies": {
   },
