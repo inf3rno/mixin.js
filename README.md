@@ -2,10 +2,42 @@
 
 [![Build Status](https://travis-ci.org/inf3rno/o3.png?branch=master)](https://travis-ci.org/inf3rno/o3)
 
-The Ozone class framework contains enhanced class support and error handling to ease the development of object-oriented javascript applications.
-Another alternative to get a better class support to use ES6 classes and compilers like Babel, Traceur or TypeScript.
+The Ozone class framework contains enhanced class support and error handling to ease the development of object-oriented javascript applications in an ES5 environment.
+Another alternative to get a better class support to use ES6 classes and compilers like Babel, Traceur or TypeScript until native ES6 support arrives.
 
 ## Documentation
+
+### Installation
+
+```bash
+npm install o3
+```
+
+```bash
+bower install o3
+```
+
+#### Requirements
+
+An ES5 capable environment is required with
+
+- `Object.create`
+- ES5 compatible property enumeration: `Object.defineProperty`, `Object.getOwnPropertyDescriptor`, `Object.prototype.hasOwnProperty`, etc.
+- `Array.prototype.forEach`
+
+#### Testing
+
+I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
+
+#### Usage
+
+In this documentation I used the framework as follows:
+
+```js
+var o3 = require("o3),
+    Class = o3.Class,
+    noop = o3.noop;
+```
 
 ### Inheritance
 
@@ -259,28 +291,6 @@ var my5 = Descendant.prototype;
 var my6 = new Descendant();
 // ...
 ```
-
-## Installation
-
-```bash
-npm install o3
-```
-
-```bash
-bower install o3
-```
-
-### Requirements
-
-An ES5 capable environment is required at least with
-
-- `Object.create`
-- ES5 compatible property enumeration: `Object.defineProperty`, `Object.getOwnPropertyDescriptor`, `Object.prototype.hasOwnProperty`, etc.
-- `Array.prototype.forEach`
-
-## Testing
-
-I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
 
 ## License
 
