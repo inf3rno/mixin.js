@@ -34,7 +34,7 @@ I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
 In this documentation I used the framework as follows:
 
 ```js
-var o3 = require("o3),
+var o3 = require("o3"),
     Class = o3.Class,
     noop = o3.noop,
     UserError = o3.UserError,
