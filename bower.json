@@ -1,6 +1,6 @@
 {
   "name": "o3",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "o3 - Javascript Class Framework",
   "keywords": [
     "inheritance",
@@ -8,7 +8,11 @@
     "class",
     "ES5",
     "object-oriented",
-    "class"
+    "class",
+    "error",
+    "user error",
+    "composite error",
+    "stack trace"
   ],
   "license": "MIT",
   "authors": [

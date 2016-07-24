@@ -29,14 +29,16 @@ An ES5 capable environment is required with
 
 I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
 
-#### Usage
+### Usage
 
 In this documentation I used the framework as follows:
 
 ```js
 var o3 = require("o3),
     Class = o3.Class,
-    noop = o3.noop;
+    noop = o3.noop,
+    UserError = o3.UserError,
+    CompositeError = o3.CompositeError;
 ```
 
 ### Inheritance
@@ -291,6 +293,72 @@ var my5 = Descendant.prototype;
 var my6 = new Descendant();
 // ...
 ```
+
+### Errors
+
+#### Creating custom errors
+
+You can create custom Error sub-classes by extending the UserError class.
+
+```js
+var MyError = UserError.extend({
+    prototype: {
+        name: "MyError"
+    }
+});
+
+try {
+    throw new MyError("problem");
+}
+catch (theProblem) {
+    if (!(theProblem instanceof MyError))
+        throw theProblem;
+    console.log(theProblem);
+        // MyError: problem
+    console.log(theProblem.stack);
+        // MyError: problem
+            // at (example.js:2:16)
+            // at ...
+            // ...
+}
+```
+
+#### Creating composite errors
+
+You can create composite errors by the usage of the CompositeError class if you want to report about complex problems, which can only be described by a hierarchy of error objects.
+
+```js
+var MyCompositeError = CompositeError.extend({
+    prototype: {
+        name: "MyCompositeError"
+    }
+});
+
+try {
+    try {
+        throw new MyError("problem");
+    }
+    catch (theProblem) {
+        throw new MyCompositeError({
+            message: "complex problem",
+            theSource: theProblem
+        })
+    }
+}
+catch (theComplexProblem) {
+    console.log(theComplexProblem.stack);
+        // MyCompositeError: complex problem
+            // at (example.js:5:32)
+            // at ...
+            // ...
+        // caused by <theSource> MyError: problem
+            // at (example.js:2:16)
+            // at ...
+            // ...
+}
+```
+
+The CompositeError can be a great help for example by nested validation errors or by reporting about multiple parallel async failures.
 
 ## License
 
