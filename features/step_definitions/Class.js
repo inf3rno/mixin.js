@@ -101,6 +101,26 @@ module.exports = function () {
         next();
     });
 
+    this.When("I create a class with some of these properties defined", function (next) {
+        aClass = Class({
+            a: 11,
+            prototype: {
+                c: 13
+            }
+        });
+        next();
+    });
+
+    this.Then("the absorb method should add only the missing properties from the config", function (next) {
+        Class.absorb.call(aClass, config);
+        expect(aClass.a).to.be(11);
+        expect(aClass.b).to.be(2);
+        expect(aClass.prototype.c).to.be(13);
+        expect(aClass.prototype.d).to.be(4);
+        next();
+    });
+
+
     this.Given("an ancestor class having properties", function (next) {
         anAncestor = Class(Object, {
             x: 1,
@@ -112,7 +132,7 @@ module.exports = function () {
         next();
     });
 
-    this.Then("the class should inherit properties of the ancestor", function (next) {
+    this.Then("the class should inherit properties from the ancestor", function (next) {
         expect(aClass.prototype).to.be.an(anAncestor);
         expect(aClass.x).to.be(anAncestor.x);
         next();
@@ -138,13 +158,78 @@ module.exports = function () {
         next();
     });
 
-    this.Then("the class should add the properties of the other class", function (next) {
+    this.Then("the class should contain the properties of the other class", function (next) {
         expect(aClass.a).to.be(1);
         expect(aClass.b).to.be(12);
         expect(aClass.x).to.be(101);
         expect(aClass.prototype.c).to.be(3);
         expect(aClass.prototype.d).to.be(14);
         expect(aClass.prototype.y).to.be(102);
+        next();
+    });
+
+    this.When("I create a class and absorb the missing properties from another class", function (next) {
+        aClass = Class({
+            a: 1,
+            prototype: {
+                c: 3
+            }
+        });
+        var anotherClass = Class({
+            a: 11,
+            b: 12,
+            prototype: {
+                c: 13,
+                d: 14
+            }
+        });
+        Class.absorb.call(aClass, anotherClass);
+        next();
+    });
+
+    this.Then("the class should add the properties of the other class only if they weren't defined previously", function (next) {
+        expect(aClass.a).to.be(1);
+        expect(aClass.b).to.be(12);
+        expect(aClass.prototype.c).to.be(3);
+        expect(aClass.prototype.d).to.be(14);
+        next();
+    });
+
+    this.When("I create a class and absorb the missing properties from another class, which inherited some of the properties", function (next) {
+        aClass = Class({
+            a: 1,
+            prototype: {
+                d: 4
+            }
+        });
+        var anAncestor = Class({
+            a: 11,
+            b: 12,
+            c: 13,
+            prototype: {
+                d: 14,
+                e: 15,
+                f: 16
+            }
+        });
+        var anotherClass = Class(anAncestor, {
+            a: 21,
+            b: 22,
+            prototype: {
+                e: 25
+            }
+        });
+        Class.absorb.call(aClass, anotherClass);
+        next();
+    });
+
+    this.Then("the class should add the inherited and own properties of the other class only if they weren't defined previously", function (next) {
+        expect(aClass.a).to.be(1);
+        expect(aClass.b).to.be(22);
+        expect(aClass.c).to.be(13);
+        expect(aClass.prototype.d).to.be(4);
+        expect(aClass.prototype.e).to.be(25);
+        expect(aClass.prototype.f).to.be(16);
         next();
     });
 
@@ -159,17 +244,37 @@ module.exports = function () {
         next();
     });
 
-    this.When("I create a class and merge it with the Class class properties", function (next) {
+    this.When("I create a class and merge it with the Class class", function (next) {
         aClass = Class(Object, {});
         Class.merge.call(aClass, Class);
         next();
     });
 
-    this.Then("the class should add the properties of the Class class", function (next) {
+    this.Then("the class should contain the methods of the Class class", function (next) {
         expect(aClass.prototype).not.to.be.a(Class);
         expect(aClass.prototype.clone).to.be(Class.prototype.clone);
         expect(aClass.clone).to.be(Class.clone);
         next();
     });
+
+    this.When("I create a class and absorb the missing methods from the Class class", function (next) {
+        aClass = Class({
+            merge: 1,
+            prototype: {
+                clone: 2
+            }
+        });
+        Class.absorb.call(aClass, Class);
+        next();
+    });
+
+    this.Then("the class should contain the methods of the Class class only if they weren't defined previously", function (next) {
+        expect(aClass.merge).to.be(1);
+        expect(aClass.clone).to.be(Class.clone);
+        expect(aClass.prototype.clone).to.be(2);
+        expect(aClass.prototype.merge).to.be(Class.prototype.merge);
+        next();
+    });
+
 
 };

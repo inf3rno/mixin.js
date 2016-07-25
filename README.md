@@ -156,6 +156,18 @@ var MyClass = Class.clone(function MyClass() {
 });
 ```
 
+#### Inheritance with clone and absorb
+
+You can fill in missing properties with the usage of absorb.
+
+```js
+var MyClass = Class(SomeAncestor, {...});
+Class.absorb.call(MyClass, Class);
+MyClass.merge({...});
+```
+
+For example if you don't have Class methods and your class already has an ancestor, then you can use absorb() to add Class methods.
+
 ### Constructors
 
 #### Using a custom constructor
@@ -292,6 +304,54 @@ var Descendant = MyClass.clone(function Descendant() {
 var my5 = Descendant.prototype;
 var my6 = new Descendant();
 // ...
+```
+
+#### Using absorb(), merge() or inheritance to set the defaults values on properties
+
+You can use absorb() to set default values after configuration.
+
+```js
+var MyClass = Class.extend({
+    prototype: {
+        constructor: function (config) {
+            var theDefaults = {
+                // ...
+            };
+            this.merge(config);
+            this.absorb(theDefaults);
+        }
+    }
+});
+```
+
+You can use merge() to set default values before configuration.
+
+```js
+var MyClass = Class.extend({
+    prototype: {
+        constructor: function (config) {
+            var theDefaults = {
+                // ...
+            };
+            this.merge(theDefaults);
+            this.merge(config);
+        }
+    }
+});
+```
+
+You can use inheritance to set default values on class level.
+
+```js
+var MyClass = Class.extend({
+    prototype: {
+        aProperty: defaultValue,
+        // ...
+        constructor: function (config) {
+            this.merge(config);
+        }
+    }
+});
 ```
 
 ### Errors
