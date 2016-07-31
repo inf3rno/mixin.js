@@ -227,6 +227,32 @@ In fact you don't need to pass any arguments to the Class function if you need a
 var MyClass = Class();
 ```
 
+The default factory calls the build() and init() methods if they are given.
+
+```js
+var MyClass = Class({
+    prototype: {
+        build: function (options) {
+            console.log("build", options);
+        },
+        init: function (options) {
+            console.log("init", options);
+        }
+    }
+});
+
+var my = new MyClass({a: 1, b: 2});
+    // build {a: 1, b: 2}
+    // init {a: 1, b: 2}
+
+var my2 = my.clone({c: 3});
+    // build {c: 3}
+
+var MyClass2 = MyClass.extend({}, [{d: 4}]);
+    // build {d: 4}
+
+```
+
 ### Instantiation
 
 #### Creating new instance with the new operator
@@ -265,6 +291,8 @@ var my2 = my.clone();
 ```
 
 Be aware that this is prototypal inheritance with Object.create(), so the inherited properties won't be enumerable.
+
+The clone() method calls the build() method on the new instance if it is given.
 
 #### Using clone in the constructor
 
