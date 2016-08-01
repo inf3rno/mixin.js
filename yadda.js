@@ -15,6 +15,7 @@ new Yadda.FeatureFileSearch("./features").each(function (file) {
         library.Given = library.given;
         library.When = library.when;
         library.Then = library.then;
+        // note: Making compatible with the Intellij cucumber plugin
 
         var defineSteps = require(stepsFile);
         defineSteps.call(library);

@@ -6,7 +6,7 @@ module.exports = function () {
 
     var anInstance;
 
-    this.When("I create a new user error instance with custom properties", function (next) {
+    this.When(/^I create a new user error instance with custom properties$/, function (next) {
         anInstance = new UserError({
             message: "blah",
             a: 1,
@@ -15,13 +15,13 @@ module.exports = function () {
         next();
     });
 
-    this.Then("this instance should contain the custom properties", function (next) {
+    this.Then(/^this instance should contain the custom properties$/, function (next) {
         expect(anInstance).to.be.an(UserError);
         expect(anInstance.a).to.be(1);
         next();
     });
 
-    this.When("I create a new user error instance", function (next) {
+    this.When(/^I create a new user error instance$/, function (next) {
         var a = function a() {
             b();
         };
@@ -35,7 +35,7 @@ module.exports = function () {
         next();
     });
 
-    this.Then("the stack property should contain the type, the message and the stack trace of this instance", function (next) {
+    this.Then(/^the stack property should contain the type, the message and the stack trace of this instance$/, function (next) {
         expect(/UserError: the problem/.test(anInstance.stack)).to.be.ok();
         expect(/at c \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
         expect(anInstance.frames[0].getFunctionName()).to.equal("c");
@@ -44,5 +44,5 @@ module.exports = function () {
         expect(/at a \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
         expect(anInstance.frames[2].getFunctionName()).to.equal("a");
         next();
-    })
+    });
 };
