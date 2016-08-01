@@ -3,7 +3,7 @@ Yadda.plugins.mocha.StepLevelPlugin.init();
 
 var English = Yadda.localisation.English;
 
-var path = require("path");
+var path = Yadda.shims.path;
 
 new Yadda.FeatureFileSearch("./features").each(function (file) {
 
@@ -28,3 +28,11 @@ new Yadda.FeatureFileSearch("./features").each(function (file) {
         });
     });
 });
+
+function fixDynamicRequireByBrowserify() {
+    // note: require_globify did not work, so I have to do this manually until I find a better solution. :S
+    require("./features/step_definitions/noop");
+    require("./features/step_definitions/Class");
+    require("./features/step_definitions/UserError");
+    require("./features/step_definitions/CompositeError");
+}

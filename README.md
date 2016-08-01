@@ -17,6 +17,21 @@ npm install o3
 bower install o3
 ```
 
+#### Environment compatibility
+
+The framework succeeded the tests on
+
+ - node v4.2.1
+ - chrome 51.0.2704
+ 
+by the usage of npm scripts under win7 x64.
+
+I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
+I used [Karma](https://github.com/karma-runner/karma) with [Browserify](https://github.com/substack/node-browserify) to test the framework in browsers.
+
+On other environments without `Error.captureStackTrace` you will have an empty stack and fail the stack related tests.
+On pre-ES5 environments there will be bugs in the Class module due to pre-ES5 enumeration and the lack of some ES5 methods.
+
 #### Requirements
 
 An ES5 capable environment is required with
@@ -24,12 +39,9 @@ An ES5 capable environment is required with
 - `Object.create`
 - ES5 compatible property enumeration: `Object.defineProperty`, `Object.getOwnPropertyDescriptor`, `Object.prototype.hasOwnProperty`, etc.
 - `Array.prototype.forEach`
+- `Error.captureStackTrace` or an adapter with similar capabilities
 
-#### Testing
-
-I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
-
-### Usage
+#### Usage
 
 In this documentation I used the framework as follows:
 

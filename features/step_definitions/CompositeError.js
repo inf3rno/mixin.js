@@ -30,7 +30,7 @@ module.exports = function () {
         expect(/caused by <a> Error: yyy/.test(anInstance.stack)).to.be.ok();
         expect(/caused by <b> CompositeError: zzz/.test(anInstance.stack)).to.be.ok();
         expect(/caused by <b.x> UserError: qqq/.test(anInstance.stack)).to.be.ok();
-        expect(/at .*\.js:\d+:\d+/.test(anInstance.stack)).to.be.ok();
+        expect(/at .*:\d+:\d+/.test(anInstance.stack)).to.be.ok();
         next();
     });
 
