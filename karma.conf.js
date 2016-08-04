@@ -3,6 +3,7 @@ module.exports = function (config) {
         plugins: [
             "karma-browserify",
             "karma-chrome-launcher",
+            "karma-phantomjs-launcher",
             "karma-mocha"
         ],
         frameworks: ["browserify", "mocha"],
@@ -29,7 +30,7 @@ module.exports = function (config) {
         browserify: {
             debug: true
         },
-        browsers: ["Chrome"],
+        browsers: ["Chrome", "PhantomJS"],
         reporters: ["progress"],
         port: 9876,
         colors: true,

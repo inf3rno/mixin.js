@@ -38,11 +38,11 @@ module.exports = function () {
     this.Then(/^the stack property should contain the type, the message and the stack trace of this instance$/, function (next) {
         expect(/UserError: the problem/.test(anInstance.stack)).to.be.ok();
         expect(/at c \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-        expect(anInstance.frames[0].getFunctionName()).to.equal("c");
+        expect(anInstance.stack.frames[0].getFunctionName()).to.equal("c");
         expect(/at b \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-        expect(anInstance.frames[1].getFunctionName()).to.equal("b");
+        expect(anInstance.stack.frames[1].getFunctionName()).to.equal("b");
         expect(/at a \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-        expect(anInstance.frames[2].getFunctionName()).to.equal("a");
+        expect(anInstance.stack.frames[2].getFunctionName()).to.equal("a");
         next();
     });
 };
