@@ -1,6 +1,6 @@
 var expect = require("expect.js"),
     sinon = require("sinon"),
-    Class = require("../../lib/Class");
+    Class = require("../..").Class;
 
 module.exports = function () {
 

@@ -1,6 +1,6 @@
 var expect = require("expect.js"),
     sinon = require("sinon"),
-    UserError = require("../../lib/UserError");
+    UserError = require("../..").UserError;
 
 module.exports = function () {
 

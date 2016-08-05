@@ -1,5 +1,5 @@
 var expect = require("expect.js"),
-    noop = require("../../lib/noop");
+    noop = require("../..").noop;
 
 module.exports = function () {
 

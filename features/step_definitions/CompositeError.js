@@ -1,7 +1,8 @@
 var expect = require("expect.js"),
     sinon = require("sinon"),
-    CompositeError = require("../../lib/CompositeError"),
-    UserError = require("../../lib/UserError");
+    o3 = require("../.."),
+    CompositeError = o3.CompositeError,
+    UserError = o3.UserError;
 
 module.exports = function () {
 
