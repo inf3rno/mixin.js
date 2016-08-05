@@ -25,10 +25,11 @@ The framework succeeded the tests on
  - chrome 51.0
  - firefox 47.0 and 48.0
  - internet explorer 11.0
- - opera 39.0
  - phantomjs 2.1
  
 by the usage of npm scripts under win7 x64.
+
+I wasn't able to test the framework by Opera since the Karma launcher is buggy, so I decided not to support Opera.
 
 I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
 I used [Karma](https://github.com/karma-runner/karma) with [Browserify](https://github.com/substack/node-browserify) to test the framework in browsers.
