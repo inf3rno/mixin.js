@@ -23,7 +23,7 @@ The framework succeeded the tests on
 
  - node v4.2 and v5.x
  - chrome 51.0
- - firefox 47.0
+ - firefox 47.0 and 48.0
  - phantomjs 2.1
  
 by the usage of npm scripts under win7 x64.
