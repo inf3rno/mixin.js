@@ -6,6 +6,7 @@ module.exports = function (config) {
             "karma-chrome-launcher",
             "karma-firefox-launcher",
             "karma-ie-launcher",
+            "karma-opera-launcher",
             "karma-phantomjs-launcher",
             "karma-mocha"
         ],
@@ -37,6 +38,7 @@ module.exports = function (config) {
             "Chrome",
             "Firefox",
             "IE",
+            //"Opera", // the Karma Opera Launcher does not work on Windows
             "PhantomJS"
         ],
         reporters: ["progress"],
@@ -59,6 +61,7 @@ module.exports = function (config) {
             "Chrome_travis_ci",
             "Firefox",
             //"IE", // MSIE is not supported by Travis
+            "Opera",
             "PhantomJS"
         ];
     }
