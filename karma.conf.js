@@ -33,7 +33,12 @@ module.exports = function (config) {
         browserify: {
             debug: true
         },
-        browsers: ["Chrome", "Firefox", "IE", "PhantomJS"],
+        browsers: [
+            "Chrome",
+            "Firefox",
+            "IE",
+            "PhantomJS"
+        ],
         reporters: ["progress"],
         port: 9876,
         colors: true,
@@ -50,7 +55,12 @@ module.exports = function (config) {
                 flags: ['--no-sandbox']
             }
         };
-        options.browsers = ["Chrome_travis_ci", "Firefox", "IE", "PhantomJS"];
+        options.browsers = [
+            "Chrome_travis_ci",
+            "Firefox",
+            //"IE", // MSIE is not supported by Travis
+            "PhantomJS"
+        ];
     }
 
     config.set(options);
