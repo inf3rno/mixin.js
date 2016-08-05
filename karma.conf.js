@@ -1,5 +1,6 @@
 module.exports = function (config) {
-    config.set({
+
+    var options = {
         plugins: [
             "karma-browserify",
             "karma-chrome-launcher",
@@ -38,5 +39,17 @@ module.exports = function (config) {
         autoWatch: false,
         captureTimeout: 6000,
         singleRun: true
-    });
+    };
+
+    if (process.env.TRAVIS) {
+        options.customLaunchers = {
+            Chrome_travis_ci: {
+                base: 'Chrome',
+                flags: ['--no-sandbox']
+            }
+        };
+        options.browsers = ["Chrome_travis_ci", "PhantomJS"];
+    }
+
+    config.set(options);
 };
