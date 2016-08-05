@@ -4,6 +4,7 @@ module.exports = function (config) {
         plugins: [
             "karma-browserify",
             "karma-chrome-launcher",
+            "karma-firefox-launcher",
             "karma-phantomjs-launcher",
             "karma-mocha"
         ],
@@ -31,7 +32,7 @@ module.exports = function (config) {
         browserify: {
             debug: true
         },
-        browsers: ["Chrome", "PhantomJS"],
+        browsers: ["Chrome", "Firefox", "PhantomJS"],
         reporters: ["progress"],
         port: 9876,
         colors: true,
@@ -48,7 +49,7 @@ module.exports = function (config) {
                 flags: ['--no-sandbox']
             }
         };
-        options.browsers = ["Chrome_travis_ci", "PhantomJS"];
+        options.browsers = ["Chrome_travis_ci", "Firefox", "PhantomJS"];
     }
 
     config.set(options);

@@ -21,9 +21,10 @@ bower install o3
 
 The framework succeeded the tests on
 
- - node v4.2.1
- - chrome 51.0.2704
- - phantomjs 2.1.5
+ - node v4.2 and v5.x
+ - chrome 51.0
+ - firefox 47.0
+ - phantomjs 2.1
  
 by the usage of npm scripts under win7 x64.
 
