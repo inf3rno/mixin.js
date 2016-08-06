@@ -1,6 +1,7 @@
 var expect = require("expect.js"),
     sinon = require("sinon"),
-    UserError = require("../..").UserError;
+    UserError = require("../..").UserError,
+    UnrecognizedFrame = require("../../lib/error/stack/frame/UnrecognizedFrame");
 
 module.exports = function () {
 
@@ -37,12 +38,16 @@ module.exports = function () {
 
     this.Then(/^the stack property should contain the type, the message and the stack trace of this instance$/, function (next) {
         expect(/UserError: the problem/.test(anInstance.stack)).to.be.ok();
-        expect(/at c \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-        expect(anInstance.stack.frames[0].getFunctionName()).to.equal("c");
-        expect(/at b \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-        expect(anInstance.stack.frames[1].getFunctionName()).to.equal("b");
-        expect(/at a \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-        expect(anInstance.stack.frames[2].getFunctionName()).to.equal("a");
+        if (!(anInstance.stack.frames[0] instanceof UnrecognizedFrame)) {
+            expect(/at c \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
+            expect(anInstance.stack.frames[0].getFunctionName()).to.equal("c");
+            expect(/at b \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
+            expect(anInstance.stack.frames[1].getFunctionName()).to.equal("b");
+            expect(/at a \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
+            expect(anInstance.stack.frames[2].getFunctionName()).to.equal("a");
+        }
+        else
+            console.log("Stack frame format was not recognized in this environment.");
         next();
     });
 };

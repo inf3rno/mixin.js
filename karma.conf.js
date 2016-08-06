@@ -44,7 +44,7 @@ module.exports = function (config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: false,
-        captureTimeout: 6000,
+        captureTimeout: 15000,
         singleRun: true
     };
 
