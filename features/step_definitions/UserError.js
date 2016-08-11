@@ -1,7 +1,6 @@
 var expect = require("expect.js"),
     sinon = require("sinon"),
-    UserError = require("../..").UserError,
-    UnrecognizedFrame = require("../../lib/error/stack/frame/UnrecognizedFrame");
+    UserError = require("../..").UserError;
 
 module.exports = function () {
 
@@ -23,31 +22,24 @@ module.exports = function () {
     });
 
     this.When(/^I create a new user error instance$/, function (next) {
-        var a = function a() {
-            b();
+        var firstFn = function firstFn() {
+            secondFn();
         };
-        var b = function b() {
-            c();
+        var secondFn = function secondFn() {
+            thirdFn();
         };
-        var c = function c() {
+        var thirdFn = function thirdFn() {
             anInstance = new UserError("the problem");
         };
-        a();
+        firstFn();
         next();
     });
 
-    this.Then(/^the stack property should contain the type, the message and the stack trace of this instance$/, function (next) {
+    this.Then(/^the stack property should contain the type, the message and the stack frames of this instance$/, function (next) {
         expect(/UserError: the problem/.test(anInstance.stack)).to.be.ok();
-        if (!(anInstance.stack.frames[0] instanceof UnrecognizedFrame)) {
-            expect(/at c \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-            expect(anInstance.stack.frames[0].getFunctionName()).to.equal("c");
-            expect(/at b \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-            expect(anInstance.stack.frames[1].getFunctionName()).to.equal("b");
-            expect(/at a \(.*:\d+:\d+\)/.test(anInstance.stack)).to.be.ok();
-            expect(anInstance.stack.frames[2].getFunctionName()).to.equal("a");
-        }
-        else
-            console.log("Stack frame format was not recognized in this environment.");
+        expect(/thirdFn/.test(anInstance.stack.frames[0])).to.be.ok();
+        expect(/secondFn/.test(anInstance.stack.frames[1])).to.be.ok();
+        expect(/firstFn/.test(anInstance.stack.frames[2])).to.be.ok();
         next();
     });
 };

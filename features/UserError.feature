@@ -9,4 +9,4 @@ Feature: UserError
 
   Scenario: using the stack of user errors
     When I create a new user error instance
-    Then the stack property should contain the type, the message and the stack trace of this instance
+    Then the stack property should contain the type, the message and the stack frames of this instance
