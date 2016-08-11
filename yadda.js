@@ -36,4 +36,5 @@ function fixDynamicRequireByBrowserify() {
     require("./features/step_definitions/Class");
     require("./features/step_definitions/UserError");
     require("./features/step_definitions/CompositeError");
+    require("./features/step_definitions/NativeError");
 }

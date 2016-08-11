@@ -465,6 +465,24 @@ catch (theComplexProblem) {
 
 The CompositeError can be a great help for example by nested validation errors or by reporting about multiple parallel async failures.
 
+#### Wrap native errors
+
+You can wrap native errors to get a similar stack then we usually have by user errors.
+
+```js
+try {
+    theNotDefinedFunction();
+}
+catch (error) {
+    console.log(new NativeError(error).stack.toString());
+        // ReferenceError: theNotDefinedFunction is not defined
+            // at ...
+            // ...
+}
+```
+
+The NativeError wrapper can help in logging the native errors of your client side applications for further investigation.
+
 ## License
 
 MIT - 2015 Jánszky László Lajos
