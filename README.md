@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/inf3rno/o3.png?branch=master)](https://travis-ci.org/inf3rno/o3)
 
-The Ozone class framework contains enhanced class support and error handling to ease the development of object-oriented javascript applications in an ES5 environment.
+The Ozone class framework contains enhanced class support to ease the development of object-oriented javascript applications in an ES5 environment.
 Another alternative to get a better class support to use ES6 classes and compilers like Babel, Traceur or TypeScript until native ES6 support arrives.
 
 ## Documentation
@@ -34,8 +34,7 @@ I wasn't able to test the framework by Opera since the Karma launcher is buggy, 
 I used [Yadda](https://github.com/acuminous/yadda) to write BDD tests.
 I used [Karma](https://github.com/karma-runner/karma) with [Browserify](https://github.com/substack/node-browserify) to test the framework in browsers.
 
-On other environments without `Error.captureStackTrace` you will have an empty stack and fail the stack related tests.
-On pre-ES5 environments there will be bugs in the Class module due to pre-ES5 enumeration and the lack of some ES5 methods.
+On pre-ES5 environments there will be bugs in the Class module due to pre-ES5 enumeration and the lack of some ES5 methods, so pre-ES5 environments are not supported.
 
 #### Requirements
 
@@ -44,7 +43,6 @@ An ES5 capable environment is required with
 - `Object.create`
 - ES5 compatible property enumeration: `Object.defineProperty`, `Object.getOwnPropertyDescriptor`, `Object.prototype.hasOwnProperty`, etc.
 - `Array.prototype.forEach`
-- `Error.captureStackTrace` or an adapter with similar capabilities
 
 #### Usage
 
@@ -52,15 +50,12 @@ In this documentation I used the framework as follows:
 
 ```js
 var o3 = require("o3"),
-    Class = o3.Class,
-    noop = o3.noop,
-    UserError = o3.UserError,
-    CompositeError = o3.CompositeError;
+    Class = o3.Class;
 ```
 
 ### Inheritance
 
-#### Inheriting from native classes (Error in these examples)
+#### Inheriting from native classes (from the Error class in these examples)
 
 You can extend native classes by calling the Class() function.
 
@@ -398,90 +393,6 @@ var MyClass = Class.extend({
     }
 });
 ```
-
-### Errors
-
-#### Creating custom errors
-
-You can create custom Error sub-classes by extending the UserError class.
-
-```js
-var MyError = UserError.extend({
-    prototype: {
-        name: "MyError"
-    }
-});
-
-try {
-    throw new MyError("problem");
-}
-catch (theProblem) {
-    if (!(theProblem instanceof MyError))
-        throw theProblem;
-    console.log(theProblem);
-        // MyError: problem
-    console.log(theProblem.stack);
-        // MyError: problem
-            // at (example.js:2:16)
-            // at ...
-            // ...
-}
-```
-
-#### Creating composite errors
-
-You can create composite errors by the usage of the CompositeError class if you want to report about complex problems, which can only be described by a hierarchy of error objects.
-
-```js
-var MyCompositeError = CompositeError.extend({
-    prototype: {
-        name: "MyCompositeError"
-    }
-});
-
-try {
-    try {
-        throw new MyError("problem");
-    }
-    catch (theProblem) {
-        throw new MyCompositeError({
-            message: "complex problem",
-            theSource: theProblem
-        })
-    }
-}
-catch (theComplexProblem) {
-    console.log(theComplexProblem.stack);
-        // MyCompositeError: complex problem
-            // at (example.js:5:32)
-            // at ...
-            // ...
-        // caused by <theSource> MyError: problem
-            // at (example.js:2:16)
-            // at ...
-            // ...
-}
-```
-
-The CompositeError can be a great help for example by nested validation errors or by reporting about multiple parallel async failures.
-
-#### Wrap native errors
-
-You can wrap native errors to get a similar stack then we usually have by user errors.
-
-```js
-try {
-    theNotDefinedFunction();
-}
-catch (error) {
-    console.log(new NativeError(error).stack.toString());
-        // ReferenceError: theNotDefinedFunction is not defined
-            // at ...
-            // ...
-}
-```
-
-The NativeError wrapper can help in logging the native errors of your client side applications for further investigation.
 
 ## License
 
