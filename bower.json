@@ -1,6 +1,6 @@
 {
   "name": "o3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "o3 - Javascript Class Framework",
   "keywords": [
     "inheritance",
@@ -27,12 +27,17 @@
     ".gitignore",
     ".npmignore",
     ".travis.yml",
-    "package.json"
+    "package.json",
+    "features/",
+    "karma.conf.js",
+    "yadda.js",
+    "README.md"
   ],
   "scripts": {
     "test": "mocha --reporter spec yadda.js"
   },
   "dependencies": {
+    "capability": "^0.2.1"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
