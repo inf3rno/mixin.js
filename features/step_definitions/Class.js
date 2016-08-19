@@ -276,5 +276,18 @@ module.exports = function () {
         next();
     });
 
+    this.When(/^I have a class with a constructor$/, function (next) {
+        aClass = sinon.spy();
+        next();
+    });
+
+    this.Then(/^I should be able to pass an array of arguments to the constructor by instantiation$/, function (next) {
+        var args = ["a", "b", "c"];
+        var instance = Class.newInstance.apply(aClass, args);
+        expect(instance).to.be.an(aClass);
+        expect(aClass.called).to.be.ok();
+        expect(aClass.getCall(0).args).to.eql(args);
+        next();
+    });
 
 };

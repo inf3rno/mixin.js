@@ -1,6 +1,6 @@
 {
   "name": "o3",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "o3 - Javascript Class Framework",
   "keywords": [
     "inheritance",
@@ -26,7 +26,7 @@
     "test-karma": "karma start karma.conf.js"
   },
   "dependencies": {
-    "capability": "^0.2.1"
+    "capability": "^0.2.2"
   },
   "devDependencies": {
     "browserify": "10.2.6",

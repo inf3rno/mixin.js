@@ -276,6 +276,26 @@ var MyClass = Class();
 var my = new MyClass();
 ```
 
+#### Creating a new instance with the static newInstance method
+
+If you want to pass an array of arguments then you can do it the following way.
+
+```js
+var MyClass = Class.extend({
+    prototype: {
+        constructor: function () {
+            for (var i in arguments)
+                console.log(arguments[i]);
+        }
+    }
+});
+
+var my = MyClass.newInstance.apply(MyClass, ["a", "b", "c"]);
+    // a
+    // b
+    // c
+```
+
 #### Creating new instance with clone
 
 You can create a new instance by cloning the prototype of the class.
@@ -291,6 +311,8 @@ Or you can inherit the utility methods to make this easier.
 var MyClass = Class.extend();
 var my = MyClass.prototype.clone();
 ```
+
+Just be aware that by default cloning calls only the `build()` method, so the `init()` method won't be called by the new instance.
 
 #### Cloning instances
 
