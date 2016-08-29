@@ -180,6 +180,56 @@ MyClass.merge({...});
 
 For example if you don't have Class methods and your class already has an ancestor, then you can use absorb() to add Class methods.
 
+#### Abstract classes
+
+Using abstract classes with instantiation verification won't be implemented in this lib, however we provide an `abstractMethod`, which you can put to not implemented parts of your abstract class.
+
+```js
+var AbstractA = Class({
+    prototype: {
+        doA: function (){
+            // ...
+            var b = this.getB();
+            // ...
+            // do something with b
+            // ...
+        },
+        getB: abstractMethod
+    }
+});
+
+var AB1 = Class(AbstractA, {
+    prototype: {
+        getB: function (){
+            return new B1();
+        }
+    }
+});
+
+var ab1 = new AB1();
+
+```
+
+I strongly support the composition over inheritance principle and I think you should use dependency injection instead of abstract classes.
+
+```js
+var A = Class({
+    prototype: {
+        init: function (b){
+            this.b = b;
+        },
+        doA: function (){
+            // ...
+            // do something with this.b
+            // ...
+        }
+    }
+});
+
+var b = new B1();
+var ab1 = new A(b);
+```
+
 ### Constructors
 
 #### Using a custom constructor

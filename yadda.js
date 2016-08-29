@@ -33,4 +33,5 @@ new Yadda.FeatureFileSearch("./features").each(function (file) {
 function fixDynamicRequireByBrowserify() {
     // note: require_globify did not work, so I have to do this manually until I find a better solution. :S
     require("./features/step_definitions/Class");
+    require("./features/step_definitions/abstractMethod");
 }

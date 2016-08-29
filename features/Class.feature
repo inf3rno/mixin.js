@@ -61,6 +61,6 @@ Feature: Class
     When I create a class and absorb the missing methods from the Class class
     Then the class should contain the methods of the Class class only if they weren't defined previously
 
-    Scenario: instantiating a class with the usage of an arguments array
-      When I have a class with a constructor
-      Then I should be able to pass an array of arguments to the constructor by instantiation
+  Scenario: instantiating a class with the usage of an arguments array
+    When I have a class with a constructor
+    Then I should be able to pass an array of arguments to the constructor by instantiation

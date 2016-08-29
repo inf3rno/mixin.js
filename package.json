@@ -1,6 +1,6 @@
 {
   "name": "o3",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "o3 - Javascript Class Framework",
   "keywords": [
     "inheritance",
@@ -8,7 +8,8 @@
     "class",
     "ES5",
     "object-oriented",
-    "class"
+    "class",
+    "abstract method"
   ],
   "license": "MIT",
   "author": "László Lajos Jánszky",
@@ -26,7 +27,7 @@
     "test-karma": "karma start karma.conf.js"
   },
   "dependencies": {
-    "capability": "^0.2.2"
+    "capability": "^0.2.5"
   },
   "devDependencies": {
     "browserify": "10.2.6",
